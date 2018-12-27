@@ -31,19 +31,19 @@ class PostcardList:
 
     def __init__(self):
         #file name, eventually with the full path
-        #self._file = 
+        self._file = None
 
         #list of postcards read from _file
-        #self._postcards =
+        self._postcards = []
 
         #is a dict where the key is the string date, and the value is a list of indices. Each index refers to the corresponding record
-        #self._date =
+        self._date = {}
 
         #is a dict where the key is the string sender, and the value is a list of indices. Each index refers to the corresponding record
-        #self._from =
+        self._from = {}
 
         #is a dict where the key is the string receiver, and the value is a list of indices. Each index refers to the corresponding record
-        #self._to =
+        self._to = {}
         pass
 
     #write self.{_date,_from,_to} to self._file
@@ -68,19 +68,27 @@ class PostcardList:
 
     # returns length of self._postcards
     def getNumberOfPostcards(self):
-        pass
+        return len(self._postcards)
 
     # returns the postcards within a date_range
     def getPostcardsByDateRange(self,date_range):
-        pass
+        old, recent = date_range
+        in_the_interval = lambda d: datetime.datetime.strptime(d, "%Y-%m-%d")>=old and datetime.datetime.strptime(d, "%Y-%m-%d")<=recent
+        filtered_dates = list(filter(in_the_interval,self._date))
+        
+        indexes = []
+        for d in filtered_dates:
+            indexes = indexes + self._date[d]
+        
+        return [self._postcards[i] for i in indexes]
 
     # returns the postcards from a sender
-    def getPostcardsBySender(self,sender):
-        pass
+    def getPostcardsBySender(self,sender): 
+        return [self._postcards[i] for i in self._from[sender]]
 
     # returns the postcards to a receiver
     def getPostcardsByReceiver(self,receiver):
-        pass
+        return [self._postcards[i] for i in self._from[receiver]]
 
     pass
     ########################
