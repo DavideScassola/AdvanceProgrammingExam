@@ -26,7 +26,8 @@ Class PostcardList must manage the sorting of dates/senders/receivers. Note that
 
 import unittest
 import datetime  # use this module to deal with dates:  https://docs.python.org/3/library/datetime.html
-import sys
+import os
+import re
 class PostcardList: 
 
     def __init__(self):
@@ -47,39 +48,59 @@ class PostcardList:
         pass
 
     #write self.{_date,_from,_to} to self._file
-    def writeFile(self):
-        pass
+    def writeFile(self,file_name):
+        with open(file_name,'w') as f:
+            for lines in self._postcards:
+                f.write(lines + "\n")
 
     #from self._file read self.{_date,_from,_to}
-<<<<<<< HEAD
-    def readFile(self, file):
-        with open(file, "r") as f:
-            for i in f:
-                self._postcards.append(i)
-        self.parsePostcards()
-        self._file = file
-=======
+
     def readFile(self, file_name):
-        with open(file_name,'r') as f: #handle file doesn't exist exeption?
-            self._file = file_name
-            for l in f:
-                self._postcards.append(l.replace("\n",""))
-        f.closed
-        
+        self.updateLists(file_name)
         self.parsePostcards()
->>>>>>> d73342f5fffa76d5b2a438674ee8a353743cd0b3
 
     # parse self._postcards, set self.{_date,_from,_to}
     def parsePostcards(self):
-        pass
+        for i,post in enumerate(self._postcards):
+            values = post.strip(" ")
+            values = re.split(";|:",values)[1::2] 
+            try:
+                values[0] = datetime.datetime.strptime(values[0],"%Y-%m-%d").date()
+            except ValueError:
+                print("Date is not in a valid format, line " + i + " will be skipped")
+                next
+            self.updateDicts(values,i)
+            
+
+
+    def updateDicts(self, keys, value):
+        for i,attr in enumerate(["self._date" ,"self._from", "self._to"]):
+            if keys[i] not in eval(attr):
+                eval(attr)[keys[i]] = [value]
+            else:
+                eval(attr)[keys[i]].append(value)
+
 
     # as write but appending to self._file 
-    def updateFile(self):
-        pass
+    def updateFile(self, file_name):
+        try:
+            with open(filename, "a") as f:
+                        for line in self._postcards:
+                            f.write(line + "\n")
+        except IOError:
+            print("Could not open the file ", f)
 
     # as read but appending to self._postcards 
-    def updateLists(self):
-        pass
+    def updateLists(self, file_name):
+        try:
+            with open(file_name,'r') as f: 
+                self._file = os.path.relpath(file_name)
+                for lines in f:
+                    self._postcards.append(lines)
+        except IOError:
+            print("Could not open the file ", f)
+
+
 
     # returns length of self._postcards
     def getNumberOfPostcards(self):
@@ -88,7 +109,7 @@ class PostcardList:
     # returns the postcards within a date_range
     def getPostcardsByDateRange(self,date_range):
         old, recent = date_range
-        in_the_interval = lambda d: datetime.datetime.strptime(d, "%Y-%m-%d")>=old and datetime.datetime.strptime(d, "%Y-%m-%d")<=recent
+        in_the_interval = lambda d: d >=old.date() and d <=recent.date()
         filtered_dates = list(filter(in_the_interval,self._date))
         
         indexes = []
@@ -98,14 +119,14 @@ class PostcardList:
         return [self._postcards[i] for i in indexes]
 
     # returns the postcards from a sender
-    def getPostcardsBySender(self,sender): 
-        return [self._postcards[i] for i in self._from[sender]]
+    def getPostcardsBySender(self,sender):
+        return [self._postcards[i] for i in self._from.get(sender, [])]
 
     # returns the postcards to a receiver
     def getPostcardsByReceiver(self,receiver):
-        return [self._postcards[i] for i in self._from[receiver]]
+        return [self._postcards[i] for i in self._to.get(receiver, [])]
 
-    pass
+    
     ########################
 
 
