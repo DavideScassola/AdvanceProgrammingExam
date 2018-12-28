@@ -26,7 +26,7 @@ Class PostcardList must manage the sorting of dates/senders/receivers. Note that
 
 import unittest
 import datetime  # use this module to deal with dates:  https://docs.python.org/3/library/datetime.html
-
+import sys
 class PostcardList: 
 
     def __init__(self):
@@ -51,8 +51,12 @@ class PostcardList:
         pass
 
     #from self._file read self.{_date,_from,_to}
-    def readFile(self):
-        pass
+    def readFile(self, file):
+        with open(file, "r") as f:
+            for i in f:
+                self._postcards.append(i)
+        self.parsePostcards()
+        self._file = file
 
     # parse self._postcards, set self.{_date,_from,_to}
     def parsePostcards(self):
