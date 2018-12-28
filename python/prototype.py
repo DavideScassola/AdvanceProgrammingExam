@@ -51,8 +51,14 @@ class PostcardList:
         pass
 
     #from self._file read self.{_date,_from,_to}
-    def readFile(self):
-        pass
+    def readFile(self, file_name):
+        with open(file_name,'r') as f: #handle file doesn't exist exeption?
+            self._file = file_name
+            for l in f:
+                self._postcards.append(l.replace("\n",""))
+        f.closed
+        
+        self.parsePostcards()
 
     # parse self._postcards, set self.{_date,_from,_to}
     def parsePostcards(self):
