@@ -28,6 +28,7 @@ import unittest
 import datetime  # use this module to deal with dates:  https://docs.python.org/3/library/datetime.html
 import os
 import re
+
 class PostcardList: 
 
     def __init__(self):
@@ -45,7 +46,7 @@ class PostcardList:
 
         #is a dict where the key is the string receiver, and the value is a list of indices. Each index refers to the corresponding record
         self._to = {}
-        pass
+        
 
     #write self.{_date,_from,_to} to self._file
     def writeFile(self,file_name):
@@ -54,7 +55,6 @@ class PostcardList:
                 f.write(lines + "\n")
 
     #from self._file read self.{_date,_from,_to}
-
     def readFile(self, file_name):
         self.updateLists(file_name)
         self.parsePostcards()
