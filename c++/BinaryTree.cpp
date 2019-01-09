@@ -16,6 +16,9 @@ class BinaryTree
         ~Node() = default;
     };
     std::unique_ptr<Node> root;
+
+	Node& search (const K& key);
+
     public:
     BinaryTree() = default;
     ~BinaryTree() = default;
@@ -86,4 +89,56 @@ BinaryTree<K,V>& BinaryTree<K,V>::operator=(const BinaryTree& bt)
     root.reset();
     auto tmp = bt;
     (*this) = std::move(tmp);
+}
+
+template <class K, class V>
+void BinaryTree<K,V>::insert (const K& key, const V& value)
+{
+	Node& node = search(key);
+
+	if(node.entry.first == key)
+		node.entry.second = value;
+
+	if(node.entry.first < key)
+		node._left = Node(key,value);
+	else 
+		node._right = Node(key,value);
+}
+
+template <class K, class V>
+typename BinaryTree<K,V>::Node& BinaryTree<K,V>::search (const K& key)
+{
+	Node* node = root;
+	K k;
+
+	while(node._left || node._right)
+	{
+		k = (node.get())->first;
+
+		if(key==k)
+			return node;
+
+    	if(key>k)
+			if(node._right)
+				node=node._right;
+			else return node;
+
+		if(key<k)
+			if(node._left)
+				node=node._left;
+			else return node;
+	}
+	
+	return node;
+}
+
+template <class K, class V>
+typename BinaryTree<K,V>::Iterator BinaryTree<K,V>::find(const K& key)
+{
+	Node& node = search(key);
+	
+	if(node.entry.first == key)
+		return Iterator(node);
+
+	else return end();
 }
