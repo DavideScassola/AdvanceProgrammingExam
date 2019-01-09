@@ -12,17 +12,17 @@ class BinaryTree
         std::unique_ptr<Node> _left;
         std::unique_ptr<Node> _right;
         std::pair<const K, V> entry; 
-        Node(const K& key, const V& value, Node* left, Node* right) : _left{left}, _right{right}, entry{std::pair<K,V>(key,value)} {}
+        Node(const K& key, const V& value, Node* left = nullptr, Node* right = nullptr) : _left{left}, _right{right}, entry{std::pair<K,V>(key,value)} {}
         ~Node() = default;
     };
     std::unique_ptr<Node> root;
     public:
     BinaryTree() = default;
     ~BinaryTree() = default;
-    BinaryTree (const BinaryTree& v) = default;
-    BinaryTree& operator=(const BinaryTree& v);
-    BinaryTree(BinaryTree&& v) noexcept = default;
-    BinaryTree& operator=(BinaryTree&& v) noexcept;
+    BinaryTree (const BinaryTree& bt);
+    BinaryTree& operator=(const BinaryTree& bt);
+    BinaryTree(BinaryTree&& bt) noexcept = default;
+    BinaryTree& operator=(BinaryTree&& bt) noexcept;
     BinaryTree(const K& key, const V& value): BinaryTree() {insert(key, value);}
 
     //used to insert a new pair key-value
@@ -57,4 +57,33 @@ class BinaryTree
     Iterator find(const K& key);
     template <class k,class v> 
     friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v>&);
+
+    void copy_util(const BinaryTree::Node& old);
 };
+
+
+template <class K, class V>
+
+BinaryTree<K,V>::BinaryTree (const BinaryTree& bt)
+{
+    BinaryTree new_tree{};
+    new_tree.copy_util(bt.root);
+}
+
+template <class K, class V>
+void BinaryTree<K,V>::copy_util(const BinaryTree::Node& old)
+{
+    insert(old.entry.second, old.entry.first);
+    if(old._left)
+        copy_util(old._left);
+    if(old._right)
+        copy_util(old._right);
+}
+
+template <class K, class V>
+BinaryTree<K,V>& BinaryTree<K,V>::operator=(const BinaryTree& bt)
+{
+    root.reset();
+    auto tmp = bt;
+    (*this) = std::move(tmp);
+}
