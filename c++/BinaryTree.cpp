@@ -4,16 +4,17 @@
 #include <algorithm>
 #include <utility>
 
-template <class K, class V, class F = less<Value_type<K>>>
+template <class K, class V>
 class BinaryTree
 {
     struct Node
     {
-        std::unique_ptr<Node> next;
+        std::unique_ptr<Node> _left;
+        std::unique_ptr<Node> _right;
         std::pair<const K, V> entry; 
-        Node(const &K key, const V& value, Node* node) : entry{key, value},next{node} {}
+        Node(const K& key, const V& value, Node* left, Node* right) : _left{left}, _right{right}, entry{std::pair<K,V>(key,value)} {}
         ~Node() = default;
-    }
+    };
     std::unique_ptr<Node> root;
     public:
     BinaryTree() = default;
@@ -34,8 +35,8 @@ class BinaryTree
     void balance();
 
     //**optional** implement the `value_type& operator[](const key_type& k)` function int the `const` and `non-const` versions). This functions, should return a reference to the value associated to the key `k`. If the key is not present, a new node with key `k` is allocated having the value `value_type{}`
-    V& operator[] (const K& key);
-    const V& operator[] const (const K& key);
+    V& operator[](const K& key) noexcept;
+    const V& operator[](const K& key) const noexcept;
 
     class Iterator;
     class ConstIterator;
@@ -54,6 +55,6 @@ class BinaryTree
 
     //find a given key and return an iterator to that node. If the key is not found returns `end()`
     Iterator find(const K& key);
-
-    friend std::ostream& operator<<(std::ostream&, const BinaryTree<K,V,F>&);
+    template <class k,class v> 
+    friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v>&);
 };
