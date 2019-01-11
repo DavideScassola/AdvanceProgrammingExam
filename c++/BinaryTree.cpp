@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <utility>
 #include <string>
+#include <vector>
 
 template <class K, class V>
 class BinaryTree
@@ -233,6 +234,48 @@ std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v>& bt)
     return os;
 }
 
+/*
+template<class T>
+std::vector<T> reorder(std::vector<T> list)
+{
+	std::vector<T> v{};
+	//std::sort(list.begin(),list.end());
+	//riordinare il vettore
+
+	if(list.size()<2)
+		return list;
+	
+	int middle = int(list.size()/2);
+
+	std::vector<T> left = std::vector<T>(list.begin(), list.begin() + middle);
+	left = reorder(left);
+
+	std::vector<T> right = std::vector<T>(list.begin() + middle + 1, list.end());
+	right = reorder(right);
+
+	v.push_back(list[middle]);
+	for(auto e : left) v.push_back(e);
+	for(auto e : right) v.push_back(e);
+
+	return v;
+}
+
+template <class K, class V>
+std::vector<std::pair<const K, V>> BinaryTree<K,V>::to_list()
+{
+	return std::vector<std::pair<const K, V>>(begin(), end());
+}
+
+template <class K, class V>
+void BinaryTree<K,V>::balance()
+{
+	auto list = to_list();
+	std::sort(list.begin(),list.end());
+	list = reorder(list);
+	for(auto e : list)
+		insert(e.first,e.second);
+}
+*/
 
 
 int main()
