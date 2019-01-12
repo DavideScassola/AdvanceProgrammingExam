@@ -71,7 +71,7 @@ class BinaryTree
 
     void copy_util(const BinaryTree::Node& old);
 
-    std::vector<std::pair<K, V>> to_list() const;
+    std::vector<std::pair<const K, V>> to_list() const;
 };
 
 template <class K, class V, class F>
@@ -275,7 +275,7 @@ std::vector<T> reorder(std::vector<T> list)
 	return v;
 }
 
-/*
+
 template <class K, class V, class F>
 std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
 {
@@ -290,7 +290,7 @@ std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
 	return list;
 	//return std::vector<std::pair<const K, V>>(begin(), end());
 }
-*/
+
 
 
 
@@ -310,14 +310,6 @@ void BinaryTree<K,V,F>::balance()
 }
 
 
-template <class K, class V, class F>
-std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
-{
-    std::vector<std::pair<K, V>> list{};
-    for(auto node : bt)
-        list.push_back(node);
-    return list;
-}
 
 
 
@@ -346,7 +338,7 @@ int main()
 	std::pair<const int, std::string> a{2,"miao"};
 	std::pair<const int, std::string> b{0,"zero"};
 	
-	std::vector<std::pair<const int, std::string>> v{a,b};
+	std::vector<std::pair<int, std::string>> v{a,b};
 
 	std::sort(v.begin(), v.end());
 
