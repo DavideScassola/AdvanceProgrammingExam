@@ -71,7 +71,7 @@ class BinaryTree
 
     void copy_util(const BinaryTree::Node& old);
 
-	std::vector<std::pair<const K, V>> to_list() const;
+    std::vector<std::pair<K, V>> to_list() const;
 };
 
 template <class K, class V>
@@ -264,7 +264,7 @@ std::vector<T> reorder(std::vector<T> list)
 }
 
 template <class K, class V>
-std::vector<std::pair<const K, V>> BinaryTree<K,V>::to_list() const
+std::vector<std::pair<K, V>> BinaryTree<K,V>::to_list() const
 {
 	std::vector<std::pair<K, V>> list{};
 	auto it = begin(); 
@@ -283,10 +283,17 @@ template <class K, class V>
 void BinaryTree<K,V>::balance()
 {
 	auto list = to_list();
-	std::sort(list.begin(),list.end());
-	//list = reorder(list);
-	//for(auto e : list)
-	//	insert(e.first,e.second);
+	//std::sort(list.begin(),list.end()); //maybe not needed
+	list = reorder(list);
+
+	BinaryTree<K,V> *bt = new BinaryTree<K,V>;
+	for(auto e : list)
+		bt->insert(e.first,e.second);
+
+	std::cout << *bt << std::endl;
+	
+	this->root.reset(bt->root.get());
+	
 }
 
 /*
@@ -312,11 +319,14 @@ int main()
 {
     int keys[10]{1,2,3,4,5,6,7,8,9,10};
     std::string values[10]{"a","b","c","d","e","f","g","h","i","l"};
-    BinaryTree<const int, std::string> bt{};
+    BinaryTree<int, std::string> bt{};
     for(int i = 0; i < 10; ++i)
         bt.insert(keys[i], values[i]);
+
 	std::cout << bt << std::endl;
 
+	bt.balance();
+	
 	/*
 	auto vect = bt.to_list();  
 
