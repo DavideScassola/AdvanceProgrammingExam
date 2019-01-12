@@ -263,9 +263,6 @@ template<class T>
 std::vector<T> reorder(std::vector<T> list)
 {
 	std::vector<T> v{};
-	//std::sort(list.begin(),list.end());
-	//riordinare il vettore
-
 	if(list.size()<2)
 		return list;
 	
@@ -288,17 +285,6 @@ std::vector<T> reorder(std::vector<T> list)
 template <class K, class V, class F>
 std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
 {
-	//std::vector<std::pair<K, V>> list{};
-
-	/*
-	auto it = begin(); 
-	while(it!=nullptr)
-	{
-		list.push_back(it.entry());
-		++it;
-	}
-	*/
-	//return list;
 	return std::vector<std::pair<const K, V>>(begin(), end());
 }
 
@@ -309,7 +295,6 @@ template <class K, class V, class F>
 void BinaryTree<K,V,F>::balance()
 {
 	auto list = to_list();
-	//std::sort(list.begin(),list.end()); //maybe not needed
 	list = reorder(list);
 
 	BinaryTree<K,V> *bt = new BinaryTree<K,V>;
@@ -340,7 +325,6 @@ int main()
 
 	//S: test, recurs_bal
 	//D: perf, Makefile, memory
-	//
 
 
     return 0;
