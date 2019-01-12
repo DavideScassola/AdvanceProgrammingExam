@@ -338,6 +338,9 @@ int main()
     std::cout << bt << std::endl; 
     bt.balance();
 
+	//S: test, recurs_bal
+	//D: perf, Makefile, memory
+	//
 
 
     return 0;
