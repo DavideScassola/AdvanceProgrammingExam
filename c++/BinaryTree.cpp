@@ -70,6 +70,8 @@ class BinaryTree
     friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v>&);
 
     void copy_util(const BinaryTree::Node& old);
+
+	std::vector<std::pair<const K, V>> to_list() const;
 };
 
 template <class K, class V>
@@ -82,7 +84,8 @@ class BinaryTree<K,V>::Iterator : public std::iterator<std::forward_iterator_tag
     public:
     Iterator(Node* node) : pointed{node} {}
     Iterator(const Iterator&) = default;
-    V& operator*() const {return pointed->entry.second;}
+    V& operator*() const {return pointed->entry.second;} 
+	std::pair<const K, V> entry() const {return pointed->entry;} //########<<<<<
     Iterator& operator++(); 
     Iterator operator++(int)
     {
@@ -234,7 +237,7 @@ std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v>& bt)
     return os;
 }
 
-/*
+
 template<class T>
 std::vector<T> reorder(std::vector<T> list)
 {
@@ -261,21 +264,31 @@ std::vector<T> reorder(std::vector<T> list)
 }
 
 template <class K, class V>
-std::vector<std::pair<const K, V>> BinaryTree<K,V>::to_list()
+std::vector<std::pair<const K, V>> BinaryTree<K,V>::to_list() const
 {
-	return std::vector<std::pair<const K, V>>(begin(), end());
+	std::vector<std::pair<K, V>> list{};
+	auto it = begin(); 
+	while(it!=nullptr)
+	{
+		list.push_back(it.entry());
+		++it;
+	}
+
+	return list;
+	//return std::vector<std::pair<const K, V>>(begin(), end());
 }
+
 
 template <class K, class V>
 void BinaryTree<K,V>::balance()
 {
 	auto list = to_list();
 	std::sort(list.begin(),list.end());
-	list = reorder(list);
-	for(auto e : list)
-		insert(e.first,e.second);
+	//list = reorder(list);
+	//for(auto e : list)
+	//	insert(e.first,e.second);
 }
-*/
+
 
 
 int main()
@@ -285,6 +298,19 @@ int main()
     BinaryTree<const int, std::string> bt{};
     for(int i = 0; i < 10; ++i)
         bt.insert(keys[i], values[i]);
-    std::cout << bt << std::endl; 
+	std::cout << bt << std::endl;
+
+	/*
+	auto vect = bt.to_list();  
+
+	std::pair<const int, std::string> a{2,"miao"};
+	std::pair<const int, std::string> b{0,"zero"};
+	
+	std::vector<std::pair<const int, std::string>> v{a,b};
+
+	std::sort(v.begin(), v.end());
+	*/
+
+
     return 0;
 }
