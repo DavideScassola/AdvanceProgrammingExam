@@ -289,8 +289,6 @@ void BinaryTree<K,V>::balance()
 	BinaryTree<K,V> *bt = new BinaryTree<K,V>;
 	for(auto e : list)
 		bt->insert(e.first,e.second);
-
-	std::cout << *bt << std::endl;
 	
 	this->root.reset(bt->root.get());
 	
@@ -319,7 +317,7 @@ int main()
 {
     int keys[10]{1,2,3,4,5,6,7,8,9,10};
     std::string values[10]{"a","b","c","d","e","f","g","h","i","l"};
-    BinaryTree<int, std::string> bt{};
+    BinaryTree<const int, std::string> bt{};
     for(int i = 0; i < 10; ++i)
         bt.insert(keys[i], values[i]);
 
