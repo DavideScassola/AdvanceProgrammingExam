@@ -70,8 +70,6 @@ class BinaryTree
     friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v,f>&);
 
     void copy_util(const BinaryTree::Node& old);
-
-	std::vector<std::pair<const K, V>> to_list() const;
 };
 
 template <class K, class V, class F>
@@ -84,8 +82,7 @@ class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_t
     public:
     Iterator(Node* node) : pointed{node} {}
     Iterator(const Iterator&) = default;
-    V& operator*() const {return pointed->entry.second;} 
-	std::pair<const K, V> entry() const {return pointed->entry;} //########<<<<<
+    V& operator*() const {return pointed->entry.second;}
     Iterator& operator++(); 
     Iterator operator++(int)
     {
@@ -231,14 +228,6 @@ V& BinaryTree<K,V,F>::operator[](const K& key) noexcept
     return *(find(key)); 
 }
 
-/*
-template <class K, class V, class F>
-const V& BinaryTree<K,V,F>::operator[](const K& key) const noexcept
-{
-	Iterator s_res = find(key);
-	if(s_res!=end()) return *s_res;
-}
-*/
 
 template <class k,class v, class f> 
 std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v,f>& bt)
@@ -275,43 +264,20 @@ std::vector<T> reorder(std::vector<T> list)
 	return v;
 }
 
-/*
-template <class K, class V, class F>
-std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
+template <class K, class V>
+std::vector<std::pair<const K, V>> BinaryTree<K,V>::to_list()
 {
-	std::vector<std::pair<K, V>> list{};
-	auto it = begin(); 
-	while(it!=nullptr)
-	{
-		list.push_back(it.entry());
-		++it;
-	}
-
-	return list;
-	//return std::vector<std::pair<const K, V>>(begin(), end());
+	return std::vector<std::pair<const K, V>>(begin(), end());
 }
-*/
 
-
-
-template <class K, class V, class F>
-void BinaryTree<K,V,F>::balance()
+template <class K, class V>
+void BinaryTree<K,V>::balance()
 {
 	auto list = to_list();
 	std::sort(list.begin(),list.end());
-	//list = reorder(list);
-	//for(auto e : list)
-	//	insert(e.first,e.second);
-}
-
-
-template <class K, class V, class F>
-std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
-{
-    std::vector<std::pair<K, V>> list{};
-    for(auto node : bt)
-        list.push_back(node);
-    return list;
+	list = reorder(list);
+	for(auto e : list)
+		insert(e.first,e.second);
 }
 
 
@@ -328,19 +294,5 @@ int main()
     std::cout << bt[12] << std::endl; 
     std::cout << bt[3] << std::endl; 
     std::cout << bt << std::endl; 
-	std::cout << bt << std::endl;
-
-
-	auto vect = bt.to_list();  
-
-	std::pair<const int, std::string> a{2,"miao"};
-	std::pair<const int, std::string> b{0,"zero"};
-	
-	std::vector<std::pair<const int, std::string>> v{a,b};
-
-	std::sort(v.begin(), v.end());
-
-
-
     return 0;
 }

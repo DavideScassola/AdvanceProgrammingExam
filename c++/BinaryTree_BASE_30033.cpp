@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-template <class K, class V, class F = std::less<K>>
+template <class K, class V>
 class BinaryTree
 {
     struct Node
@@ -20,29 +20,29 @@ class BinaryTree
     };
     std::unique_ptr<Node> root;
     Node* first_node() const;
-	Node* search (const K& key);
-    F cmp;
+	Node& search (const K& key);
+
     public:
-    BinaryTree(F comparison = F{}): cmp{comparison} {}
+    BinaryTree() = default;
     ~BinaryTree() = default;
     BinaryTree (const BinaryTree& bt);
     BinaryTree& operator=(const BinaryTree& bt);
     BinaryTree(BinaryTree&& bt) noexcept = default;
     BinaryTree& operator=(BinaryTree&& bt) noexcept;
-    
+    BinaryTree(const K& key, const V& value): BinaryTree() {insert(key, value);}
 
     //used to insert a new pair key-value
     void insert (const K& key, const V& value);
 
     //clear the content of the tree
-    void clear() {root.release();}
+    void clear();
 
     //balance the tree
     void balance();
 
     //**optional** implement the `value_type& operator[](const key_type& k)` function int the `const` and `non-const` versions). This functions, should return a reference to the value associated to the key `k`. If the key is not present, a new node with key `k` is allocated having the value `value_type{}`
     V& operator[](const K& key) noexcept;
-    const V& operator[](const K& key) const noexcept {return (*this)[key];}
+    const V& operator[](const K& key) const noexcept;
 
     class Iterator;
     class ConstIterator;
@@ -66,26 +66,23 @@ class BinaryTree
 
     //find a given key and return an iterator to that node. If the key is not found returns `end()`
     Iterator find(const K& key);
-    template <class k,class v, class f> 
-    friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v,f>&);
+    template <class k,class v> 
+    friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v>&);
 
     void copy_util(const BinaryTree::Node& old);
-
-	std::vector<std::pair<const K, V>> to_list() const;
 };
 
-template <class K, class V, class F>
+template <class K, class V>
 
-class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_tag,V>
+class BinaryTree<K,V>::Iterator : public std::iterator<std::forward_iterator_tag,V>
 {
-    using Node = BinaryTree<K,V,F>::Node;
+    using Node = BinaryTree<K,V>::Node;
     Node* pointed;
 
     public:
     Iterator(Node* node) : pointed{node} {}
     Iterator(const Iterator&) = default;
-    V& operator*() const {return pointed->entry.second;} 
-	std::pair<const K, V> entry() const {return pointed->entry;} //########<<<<<
+    V& operator*() const {return pointed->entry.second;}
     Iterator& operator++(); 
     Iterator operator++(int)
     {
@@ -98,8 +95,8 @@ class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_t
 
 };
 
-template <class K, class V, class F>
-typename BinaryTree<K,V,F>::Iterator& BinaryTree<K,V,F>::Iterator::operator++()
+template <class K, class V>
+typename BinaryTree<K,V>::Iterator& BinaryTree<K,V>::Iterator::operator++()
 {
     if(pointed->_right)
     {   
@@ -117,8 +114,8 @@ typename BinaryTree<K,V,F>::Iterator& BinaryTree<K,V,F>::Iterator::operator++()
 
 }
 
-template <class K, class V, class F>
-typename BinaryTree<K,V,F>::Node* BinaryTree<K,V,F>::first_node() const
+template <class K, class V>
+typename BinaryTree<K,V>::Node* BinaryTree<K,V>::first_node() const
 {
     Node* node = root.get();
     while(node->_left != nullptr)
@@ -126,27 +123,27 @@ typename BinaryTree<K,V,F>::Node* BinaryTree<K,V,F>::first_node() const
     return node;
 }
 
-template <class K, class V, class F>
+template <class K, class V>
 
-class BinaryTree<K,V,F>::ConstIterator : public BinaryTree<K,V,F>::Iterator
+class BinaryTree<K,V>::ConstIterator : public BinaryTree<K,V>::Iterator
 { 
     public:
-        using non_const_it = BinaryTree<K,V,F>::Iterator;
+        using non_const_it = BinaryTree<K,V>::Iterator;
         using non_const_it::Iterator;
         const V& operator*() const {return non_const_it::operator*(); }
 
 };
 
-template <class K, class V, class F>
+template <class K, class V>
 
-BinaryTree<K,V,F>::BinaryTree (const BinaryTree& bt)
+BinaryTree<K,V>::BinaryTree (const BinaryTree& bt)
 {
     BinaryTree new_tree{};
     new_tree.copy_util(bt.root);
 }
 
-template <class K, class V, class F>
-void BinaryTree<K,V,F>::copy_util(const BinaryTree::Node& old)
+template <class K, class V>
+void BinaryTree<K,V>::copy_util(const BinaryTree::Node& old)
 {
     insert(old.entry.second, old.entry.first);
     if(old._left)
@@ -155,16 +152,16 @@ void BinaryTree<K,V,F>::copy_util(const BinaryTree::Node& old)
         copy_util(old._right);
 }
 
-template <class K, class V, class F>
-BinaryTree<K,V,F>& BinaryTree<K,V,F>::operator=(const BinaryTree& bt)
+template <class K, class V>
+BinaryTree<K,V>& BinaryTree<K,V>::operator=(const BinaryTree& bt)
 {
     root.reset();
     auto tmp = bt;
     (*this) = std::move(tmp);
 }
 
-template <class K, class V,class F>
-void BinaryTree<K,V,F>::insert (const K& key, const V& value)
+template <class K, class V>
+void BinaryTree<K,V>::insert (const K& key, const V& value)
 {
 	
 	if(!root)
@@ -172,76 +169,64 @@ void BinaryTree<K,V,F>::insert (const K& key, const V& value)
 		root.reset(new Node(key,value,nullptr));
 		return;
 	}
-	Node* node = search(key);
+	Node& node = search(key);
 
-	if(!cmp(node->entry.first, key) && !cmp(key, node->entry.first))
-		node->entry.second = value;
+	if(node.entry.first == key)
+		node.entry.second = value;
 
-	if(cmp(node->entry.first, key))
-		node->_right.reset(new Node(key,value,node));
+	if(node.entry.first < key)
+		node._right.reset(new Node(key,value,&node));
 	else 
-		node->_left.reset(new Node(key,value,node));
+		node._left.reset(new Node(key,value,&node));
 }
 
-template <class K, class V, class F>
-typename BinaryTree<K,V,F>::Node* BinaryTree<K,V,F>::search (const K& key)
+template <class K, class V>
+typename BinaryTree<K,V>::Node& BinaryTree<K,V>::search (const K& key)
 {
 	Node* node = root.get();
+	std::cout << "qui ci sono arrivato";
 	auto k = node->entry.first;
+	std::cout << k;
 	while(node->_left || node->_right)
 	{
-		if(!cmp(k,key) && !cmp(key,k))
-			return node;
+		
+		std::cout << k;
 
-    		if(cmp(k,key))
+		if(key==k)
+			return *node;
+
+    		if(key>k)
         	{
 			if(node->_right)
 				node=node->_right.get();
-			else return node;
+			else return *node;
         	}
 	
-		if(cmp(key,k))
+		if(key<k)
         	{
 			if(node->_left)
 				node=node->_left.get();
-			else return node;
+			else return *node;
         	}
 		k = node->entry.first;
 	}
 	
-	return node;
+	return *node;
 }
 
-template <class K, class V, class F>
-typename BinaryTree<K,V,F>::Iterator BinaryTree<K,V,F>::find(const K& key)
+template <class K, class V>
+typename BinaryTree<K,V>::Iterator BinaryTree<K,V>::find(const K& key)
 {
-	Node* node = search(key);
+	Node& node = search(key);
 	
-	if(!cmp(node->entry.first,key) && !cmp(key,node->entry.first))
+	if(node.entry.first == key)
 		return Iterator(node);
 
 	else return end();
 }
-template <class K, class V, class F>
-V& BinaryTree<K,V,F>::operator[](const K& key) noexcept 
-{
-    Iterator s_res = find(key);
-    if(s_res != end()) return *s_res;
-    insert(key, V{});
-    return *(find(key)); 
-}
 
-/*
-template <class K, class V, class F>
-const V& BinaryTree<K,V,F>::operator[](const K& key) const noexcept
-{
-	Iterator s_res = find(key);
-	if(s_res!=end()) return *s_res;
-}
-*/
-
-template <class k,class v, class f> 
-std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v,f>& bt)
+template <class k,class v> 
+std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v>& bt)
 {
     for(const auto& vals : bt )
         os << vals << " ";
@@ -249,7 +234,7 @@ std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v,f>& bt)
     return os;
 }
 
-
+/*
 template<class T>
 std::vector<T> reorder(std::vector<T> list)
 {
@@ -275,45 +260,22 @@ std::vector<T> reorder(std::vector<T> list)
 	return v;
 }
 
-/*
-template <class K, class V, class F>
-std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
+template <class K, class V>
+std::vector<std::pair<const K, V>> BinaryTree<K,V>::to_list()
 {
-	std::vector<std::pair<K, V>> list{};
-	auto it = begin(); 
-	while(it!=nullptr)
-	{
-		list.push_back(it.entry());
-		++it;
-	}
-
-	return list;
-	//return std::vector<std::pair<const K, V>>(begin(), end());
+	return std::vector<std::pair<const K, V>>(begin(), end());
 }
-*/
 
-
-
-template <class K, class V, class F>
-void BinaryTree<K,V,F>::balance()
+template <class K, class V>
+void BinaryTree<K,V>::balance()
 {
 	auto list = to_list();
 	std::sort(list.begin(),list.end());
-	//list = reorder(list);
-	//for(auto e : list)
-	//	insert(e.first,e.second);
+	list = reorder(list);
+	for(auto e : list)
+		insert(e.first,e.second);
 }
-
-
-template <class K, class V, class F>
-std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
-{
-    std::vector<std::pair<K, V>> list{};
-    for(auto node : bt)
-        list.push_back(node);
-    return list;
-}
-
+*/
 
 
 int main()
@@ -323,24 +285,6 @@ int main()
     BinaryTree<const int, std::string> bt{};
     for(int i = 0; i < 10; ++i)
         bt.insert(keys[i], values[i]);
-    const std::string str = bt[2]; 
-    std::cout << str << std::endl; 
-    std::cout << bt[12] << std::endl; 
-    std::cout << bt[3] << std::endl; 
     std::cout << bt << std::endl; 
-	std::cout << bt << std::endl;
-
-
-	auto vect = bt.to_list();  
-
-	std::pair<const int, std::string> a{2,"miao"};
-	std::pair<const int, std::string> b{0,"zero"};
-	
-	std::vector<std::pair<const int, std::string>> v{a,b};
-
-	std::sort(v.begin(), v.end());
-
-
-
     return 0;
 }

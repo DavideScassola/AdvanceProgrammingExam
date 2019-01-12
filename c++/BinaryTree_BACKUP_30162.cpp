@@ -231,14 +231,6 @@ V& BinaryTree<K,V,F>::operator[](const K& key) noexcept
     return *(find(key)); 
 }
 
-/*
-template <class K, class V, class F>
-const V& BinaryTree<K,V,F>::operator[](const K& key) const noexcept
-{
-	Iterator s_res = find(key);
-	if(s_res!=end()) return *s_res;
-}
-*/
 
 template <class k,class v, class f> 
 std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v,f>& bt)
@@ -275,9 +267,8 @@ std::vector<T> reorder(std::vector<T> list)
 	return v;
 }
 
-/*
-template <class K, class V, class F>
-std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
+template <class K, class V>
+std::vector<std::pair<const K, V>> BinaryTree<K,V>::to_list() const
 {
 	std::vector<std::pair<K, V>> list{};
 	auto it = begin(); 
@@ -290,12 +281,10 @@ std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
 	return list;
 	//return std::vector<std::pair<const K, V>>(begin(), end());
 }
-*/
 
 
-
-template <class K, class V, class F>
-void BinaryTree<K,V,F>::balance()
+template <class K, class V>
+void BinaryTree<K,V>::balance()
 {
 	auto list = to_list();
 	std::sort(list.begin(),list.end());
@@ -304,15 +293,22 @@ void BinaryTree<K,V,F>::balance()
 	//	insert(e.first,e.second);
 }
 
-
-template <class K, class V, class F>
-std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
+/*
+template <class K, class V>
+const V& BinaryTree<K,V>::operator[](const K& key) const noexcept
 {
-    std::vector<std::pair<K, V>> list{};
-    for(auto node : bt)
-        list.push_back(node);
-    return list;
+	Iterator it = find(key);
+	if(it!=nullptr) return *it;
 }
+
+template <class K, class V>
+V& BinaryTree<K,V>::operator[](const K& key) noexcept
+{
+	Iterator it = find(key);
+	if(it!=nullptr) return *it;
+	else insert(key, new V());
+}
+
 
 
 
@@ -323,14 +319,16 @@ int main()
     BinaryTree<const int, std::string> bt{};
     for(int i = 0; i < 10; ++i)
         bt.insert(keys[i], values[i]);
+<<<<<<< HEAD
     const std::string str = bt[2]; 
     std::cout << str << std::endl; 
     std::cout << bt[12] << std::endl; 
     std::cout << bt[3] << std::endl; 
     std::cout << bt << std::endl; 
+=======
 	std::cout << bt << std::endl;
 
-
+	/*
 	auto vect = bt.to_list();  
 
 	std::pair<const int, std::string> a{2,"miao"};
@@ -339,8 +337,9 @@ int main()
 	std::vector<std::pair<const int, std::string>> v{a,b};
 
 	std::sort(v.begin(), v.end());
+	*/
 
 
-
+>>>>>>> f8efc95b1cd6bbae8501f915fa72d9efe09d8117
     return 0;
 }
