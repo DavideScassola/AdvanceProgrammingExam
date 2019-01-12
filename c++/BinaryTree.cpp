@@ -289,6 +289,23 @@ void BinaryTree<K,V>::balance()
 	//	insert(e.first,e.second);
 }
 
+/*
+template <class K, class V>
+const V& BinaryTree<K,V>::operator[](const K& key) const noexcept
+{
+	Iterator it = find(key);
+	if(it!=nullptr) return *it;
+}
+
+template <class K, class V>
+V& BinaryTree<K,V>::operator[](const K& key) noexcept
+{
+	Iterator it = find(key);
+	if(it!=nullptr) return *it;
+	else insert(key, new V());
+}
+*/
+
 
 
 int main()
