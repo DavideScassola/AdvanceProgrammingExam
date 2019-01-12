@@ -31,9 +31,6 @@ class BinaryTree
     BinaryTree& operator=(BinaryTree&& bt) noexcept;
     
 
-    //used to insert a new pair key-value
-    void insert (const K& key, const V& value);
-
     //clear the content of the tree
     void clear() {root.release();}
 
@@ -66,6 +63,8 @@ class BinaryTree
 
     //find a given key and return an iterator to that node. If the key is not found returns `end()`
     Iterator find(const K& key);
+    //used to insert a new pair key-value
+    std::pair<Iterator,bool> insert (const K& key, const V& value);    
     template <class k,class v, class f> 
     friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v,f>&);
 
@@ -84,8 +83,8 @@ class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_t
     public:
     Iterator(Node* node) : pointed{node} {}
     Iterator(const Iterator&) = default;
-    V& operator*() const {return pointed->entry.second;} 
-	std::pair<const K, V> entry() const {return pointed->entry;} //########<<<<<
+    std::pair<const K, V>& operator*() const {return pointed->entry;} 
+
     Iterator& operator++(); 
     Iterator operator++(int)
     {
@@ -133,7 +132,7 @@ class BinaryTree<K,V,F>::ConstIterator : public BinaryTree<K,V,F>::Iterator
     public:
         using non_const_it = BinaryTree<K,V,F>::Iterator;
         using non_const_it::Iterator;
-        const V& operator*() const {return non_const_it::operator*(); }
+        const std::pair<const K, V>& operator*() const {return non_const_it::operator*(); }
 
 };
 
@@ -164,23 +163,33 @@ BinaryTree<K,V,F>& BinaryTree<K,V,F>::operator=(const BinaryTree& bt)
 }
 
 template <class K, class V,class F>
-void BinaryTree<K,V,F>::insert (const K& key, const V& value)
+std::pair<typename BinaryTree<K,V,F>::Iterator,bool> BinaryTree<K,V,F>::insert (const K& key, const V& value)
 {
 	
 	if(!root)
 	{
 		root.reset(new Node(key,value,nullptr));
-		return;
+		return std::pair<Iterator,bool>{Iterator{root.get()},true};
 	}
 	Node* node = search(key);
 
 	if(!cmp(node->entry.first, key) && !cmp(key, node->entry.first))
-		node->entry.second = value;
+		return std::pair<Iterator,bool>{Iterator{node},false};
+		
 
 	if(cmp(node->entry.first, key))
+	{
 		node->_right.reset(new Node(key,value,node));
+		return std::pair<Iterator,bool>{Iterator{node->_right.get()},true};
+	}
 	else 
+	{
 		node->_left.reset(new Node(key,value,node));
+		return std::pair<Iterator,bool>{Iterator{node->_left.get()},true};
+	}
+	
+
+	
 }
 
 template <class K, class V, class F>
@@ -226,9 +235,9 @@ template <class K, class V, class F>
 V& BinaryTree<K,V,F>::operator[](const K& key) noexcept 
 {
     Iterator s_res = find(key);
-    if(s_res != end()) return *s_res;
+    if(s_res != end()) return (*s_res).second;
     insert(key, V{});
-    return *(find(key)); 
+    return (*find(key)).second; 
 }
 
 /*
@@ -244,7 +253,7 @@ template <class k,class v, class f>
 std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v,f>& bt)
 {
     for(const auto& vals : bt )
-        os << vals << " ";
+        os << "(" << vals.first << ":" << vals.second << ") ";
     os << std::endl;
     return os;
 }
@@ -279,16 +288,18 @@ std::vector<T> reorder(std::vector<T> list)
 template <class K, class V, class F>
 std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
 {
-	std::vector<std::pair<K, V>> list{};
+	//std::vector<std::pair<K, V>> list{};
+
+	/*
 	auto it = begin(); 
 	while(it!=nullptr)
 	{
 		list.push_back(it.entry());
 		++it;
 	}
-
-	return list;
-	//return std::vector<std::pair<const K, V>>(begin(), end());
+	*/
+	//return list;
+	return std::vector<std::pair<const K, V>>(begin(), end());
 }
 
 
@@ -325,22 +336,7 @@ int main()
     std::cout << bt[12] << std::endl; 
     std::cout << bt[3] << std::endl; 
     std::cout << bt << std::endl; 
-	std::cout << bt << std::endl;
-
-
-
-	std::cout << bt << std::endl;
-
-	bt.balance();
-	
-	auto vect = bt.to_list();  
-
-	std::pair<const int, std::string> a{2,"miao"};
-	std::pair<const int, std::string> b{0,"zero"};
-	
-	std::vector<std::pair<int, std::string>> v{a,b};
-
-	std::sort(v.begin(), v.end());
+    bt.balance();
 
 
 
