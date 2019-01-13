@@ -1,8 +1,54 @@
-#include <BinaryTree.h>
+#define CATCH_CONFIG_MAIN
+
+#include "BinaryTree.h"
 #include <iostream>
 #include <vector>
 #include <string>
+#include "catch.hpp"
 
+
+
+
+TEST_CASE("Testing methos of class BT", "[BinaryTree]")
+{
+	std::cout << "Initializing objects" << std::cend;
+	BinaryTree<int,std::string> bt{};
+	BinaryTree<std::string,std::vector<double>> bt2{};
+	int keys[10]{1,2,3,4,5,6,7,8,9,10};
+    std::string values[10]{"a","b","c","d","e","f","g","h","i","l"};
+	for (int i = 0; i < 10; ++i)
+	{
+		bt.insert(keys[i], values[i]);
+		bt2.insert(values[i], std::vector<double>(10, i));
+	}
+
+	SCENARIO("Testing clear and find method")
+	{
+		REQUIRE((*(bt.find(1)).)second == "a");
+		REQUIRE((*(bt2.find("a")).)second == std::vector<double>(10, 1))
+		bt.clear();
+		bt2.clear();
+		REQUIRE(bt.find(1) == nullptr);
+		REQUIRE(bt2.find("a") == nullptr)
+	}
+
+	SCENARIO("Testing copy constructor")
+	{
+		BinaryTree<int,std::string> bt3{bt};
+		BinaryTree<std::string,std::vector<double>> bt4{bt2};
+		REQUIRE((*(bt.find(1)).second == (*(bt3.find(1)).second)
+		REQUIRE((*(bt2.find("a")).second == (*(bt4.find("a")).second)
+		CHECK(&(*(bt.find(1)) != &(*(bt3.find(1)))
+		CHECK(&(*(bt2.find("a")) != &(*(bt4.find("a")))
+		bt.clear();
+		bt3.clear();
+		REQUIRE((*(bt3.find(1)).)second == "a");
+		REQUIRE((*(bt4.find("a")).)second == std::vector<double>(10, 1))
+	}
+}
+
+
+/*
 
 int main()
 {
@@ -54,3 +100,5 @@ int main()
 
 	return 0;
 }
+
+*/

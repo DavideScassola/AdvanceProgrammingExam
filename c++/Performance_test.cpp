@@ -14,7 +14,7 @@ int main(int arcv, char * argv [])
     {
         std::unique_ptr<double[]> p;
         Load(const size_t s) : p{new double[s]} {}
-        ~Load() = default;
+        ~Load() = {delete[] p;};
     };
 	
 	//non piace parametrizzato con Load
