@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <chrono>
+#include "BinaryTree.cpp"
 
 int main(int arcv, char * argv [])
 {
@@ -14,7 +15,7 @@ int main(int arcv, char * argv [])
     {
         std::unique_ptr<double[]> p;
         Load(const size_t s) : p{new double[s]} {}
-        ~Load() = {delete[] p;};
+        ~Load() = default;
     };
 	
 	//non piace parametrizzato con Load
@@ -37,10 +38,11 @@ int main(int arcv, char * argv [])
 	for(int i = 0; i<N; i++)
 	{
 		linked_list_tree.insert(i,777);
-		balanced_tree.insert(i,222);
+		
 		map.insert(std::make_pair(i,111));
 	}
-		
+	
+	balanced_tree = linked_list_tree;
 	// building a vector of random ordered numbers
 	std::vector<int> random_permutation_vector;
 	for(int i = 0; i<N; i++)
@@ -78,8 +80,8 @@ int main(int arcv, char * argv [])
 		linked_list_tree.find(e);
 	}
 	auto end = std::chrono::high_resolution_clock::now();
-	auto total = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-	std::cout << "LINKED_LIST_TREE: " << total << "ms, average = " << total/N << "ms" << std::endl;
+	auto total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
+	std::cout << "LINKED_LIST_TREE: " << total << "ms, average = " << total/N << "us" << std::endl;
 
 	//RANDOM TREE
 	begin = std::chrono::high_resolution_clock::now();
@@ -88,8 +90,8 @@ int main(int arcv, char * argv [])
 		random_tree.find(e);
 	}
 	end = std::chrono::high_resolution_clock::now();
-	total = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-	std::cout << "RANDOM_TREE: " << total << "ms, average = " << total/N << "ms" << std::endl;
+	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
+	std::cout << "RANDOM_TREE: " << total << "us, average = " << total/double(N) << "us" << std::endl;
 
 	//BALANCED TREE
 	begin = std::chrono::high_resolution_clock::now();
@@ -98,8 +100,8 @@ int main(int arcv, char * argv [])
 		balanced_tree.find(e);
 	}
 	end = std::chrono::high_resolution_clock::now();
-	total = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-	std::cout << "BALANCED_TREE: " << total << "ms, average = " << total/N << "ms" << std::endl;
+	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
+	std::cout << "BALANCED_TREE: " << total << "us, average = " << total/double(N) << "us" << std::endl;
 
 	//MAP PERFORMANCES
 	begin = std::chrono::high_resolution_clock::now();
@@ -108,8 +110,8 @@ int main(int arcv, char * argv [])
 		map.find(e);
 	}
 	end = std::chrono::high_resolution_clock::now();
-	total = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-	std::cout << "MAP: " << total << "ms, average = " << total/N << "ms" << std::endl;
+	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
+	std::cout << "MAP: " << total << "us, average = " << total/double(N) << "us" << std::endl;
 
     return 0;
 }

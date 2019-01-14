@@ -28,7 +28,7 @@ class BinaryTree
     BinaryTree (const BinaryTree& bt);
     BinaryTree& operator=(const BinaryTree& bt);
     BinaryTree(BinaryTree&& bt) noexcept = default;
-    BinaryTree& operator=(BinaryTree&& bt) noexcept;
+    BinaryTree& operator=(BinaryTree&& bt) noexcept = default;
     
 
     //clear the content of the tree
@@ -140,18 +140,18 @@ template <class K, class V, class F>
 
 BinaryTree<K,V,F>::BinaryTree (const BinaryTree& bt)
 {
-    BinaryTree new_tree{};
-    new_tree.copy_util(bt.root);
+    BinaryTree{};
+    this->copy_util(*bt.root);
 }
 
 template <class K, class V, class F>
 void BinaryTree<K,V,F>::copy_util(const BinaryTree::Node& old)
 {
     insert(old.entry.second, old.entry.first);
-    if(old._left)
-        copy_util(old._left);
-    if(old._right)
-        copy_util(old._right);
+    if(old._left != nullptr)
+        copy_util(*old._left);
+    if(old._right != nullptr)
+        copy_util(*old._right);
 }
 
 template <class K, class V, class F>
@@ -294,7 +294,9 @@ std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
 template <class K, class V, class F>
 void BinaryTree<K,V,F>::balance()
 {
-	auto list = to_list();
+	if(root == nullptr)
+        return;
+    auto list = to_list();
 	list = reorder(list);
 
 	BinaryTree<K,V> *bt = new BinaryTree<K,V>;
@@ -307,25 +309,3 @@ void BinaryTree<K,V,F>::balance()
 
 
 
-
-
-int main()
-{
-    int keys[10]{1,2,3,4,5,6,7,8,9,10};
-    std::string values[10]{"a","b","c","d","e","f","g","h","i","l"};
-    BinaryTree<const int, std::string> bt{};
-    for(int i = 0; i < 10; ++i)
-        bt.insert(keys[i], values[i]);
-    const std::string str = bt[2]; 
-    std::cout << str << std::endl; 
-    std::cout << bt[12] << std::endl; 
-    std::cout << bt[3] << std::endl; 
-    std::cout << bt << std::endl; 
-    bt.balance();
-
-	//S: test, recurs_bal
-	//D: perf, Makefile, memory
-
-
-    return 0;
-}
