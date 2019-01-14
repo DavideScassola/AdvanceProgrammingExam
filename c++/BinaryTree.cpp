@@ -147,7 +147,7 @@ BinaryTree<K,V,F>::BinaryTree (const BinaryTree& bt)
 template <class K, class V, class F>
 void BinaryTree<K,V,F>::copy_util(const BinaryTree::Node& old)
 {
-    insert(old.entry.second, old.entry.first);
+    insert(old.entry.first, old.entry.second);
     if(old._left != nullptr)
         copy_util(*old._left);
     if(old._right != nullptr)
@@ -306,6 +306,4 @@ void BinaryTree<K,V,F>::balance()
 	this->root.reset(bt->root.get());
 	
 }
-
-
 

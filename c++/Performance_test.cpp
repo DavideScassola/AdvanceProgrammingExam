@@ -7,19 +7,17 @@
 #include <chrono>
 #include "BinaryTree.cpp"
 
-int main(int arcv, char * argv [])
+int main(int arcv, char *argv[])
 {
 
     //this data structure simulate an object stored in memory
     struct Load
     {
-        std::unique_ptr<double[]> p;
+        double* p;
         Load(const size_t s) : p{new double[s]} {}
-        ~Load() = default;
+	Load() = default;
+        ~Load() {delete[] p;}
     };
-	
-	//non piace parametrizzato con Load
-	//copy constr non mi funziona
 
 	std::srand(0);
 	const size_t N = (arcv<2) ? 10000 : atoi(argv[1]);
@@ -29,6 +27,8 @@ int main(int arcv, char * argv [])
 	BinaryTree<const int, int> balanced_tree;
 	BinaryTree<const int, int> random_tree;
 	std::map<const int, int> map;
+
+	//std::pair<const int, int> x{2,Load{12}};
 	
 
 	
@@ -37,12 +37,12 @@ int main(int arcv, char * argv [])
 	std::cout << "initializing trees . . ." << std::endl;
 	for(int i = 0; i<N; i++)
 	{
-		linked_list_tree.insert(i,777);
-		
-		map.insert(std::make_pair(i,111));
+		linked_list_tree.insert(i,1);
+		map.insert(std::make_pair(i,1));
 	}
 	
 	balanced_tree = linked_list_tree;
+
 	// building a vector of random ordered numbers
 	std::vector<int> random_permutation_vector;
 	for(int i = 0; i<N; i++)
@@ -53,7 +53,7 @@ int main(int arcv, char * argv [])
 	std::cout << "initializing random tree . . ." << std::endl;
 	for(auto e : random_permutation_vector)
 	{
-		random_tree.insert(e,777);
+		random_tree.insert(e,2);
 	}
 
 	// balancing one of the trees
