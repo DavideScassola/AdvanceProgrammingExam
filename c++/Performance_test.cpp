@@ -10,15 +10,6 @@
 int main(int arcv, char *argv[])
 {
 
-    //this data structure simulate an object stored in memory
-    struct Load
-    {
-        double* p;
-        Load(const size_t s) : p{new double[s]} {}
-	Load() = default;
-        ~Load() {delete[] p;}
-    };
-
 	std::srand(0);
 	const size_t N = (arcv<2) ? 10000 : atoi(argv[1]);
 	const size_t load_size = 2; //how many byte for each data
@@ -27,9 +18,9 @@ int main(int arcv, char *argv[])
 	BinaryTree<const int, int> balanced_tree;
 	BinaryTree<const int, int> random_tree;
 	std::map<const int, int> map;
-
-	//std::pair<const int, int> x{2,Load{12}};
 	
+	
+	//linked_list_tree.insert(12,int{int_size});
 
 	
 	//////////// Initializing trees ////////////
@@ -37,11 +28,15 @@ int main(int arcv, char *argv[])
 	std::cout << "initializing trees . . ." << std::endl;
 	for(int i = 0; i<N; i++)
 	{
-		linked_list_tree.insert(i,1);
-		map.insert(std::make_pair(i,1));
+		linked_list_tree.insert(i,0);
+		map.insert(std::make_pair(i,0));
 	}
+
 	
+
 	balanced_tree = linked_list_tree;
+
+
 
 	// building a vector of random ordered numbers
 	std::vector<int> random_permutation_vector;
@@ -49,16 +44,21 @@ int main(int arcv, char *argv[])
 		random_permutation_vector.push_back(i);
 	std::random_shuffle ( random_permutation_vector.begin(), random_permutation_vector.end() );
 
+	
 	// initializing random tree
 	std::cout << "initializing random tree . . ." << std::endl;
 	for(auto e : random_permutation_vector)
 	{
-		random_tree.insert(e,2);
+		random_tree.insert(e,0);
 	}
+
+	
 
 	// balancing one of the trees
 	std::cout << "balancing tree . . ." << std::endl;
 	balanced_tree.balance();
+
+	
 
 	//////////////////////////////////////////////////////////////////////////////////////
 
@@ -113,5 +113,7 @@ int main(int arcv, char *argv[])
 	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
 	std::cout << "MAP: " << total << "us, average = " << total/double(N) << "us" << std::endl;
 
+	linked_list_tree.clear();
+	
     return 0;
 }
