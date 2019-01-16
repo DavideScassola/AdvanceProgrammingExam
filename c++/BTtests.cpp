@@ -1,51 +1,76 @@
 #define CATCH_CONFIG_MAIN
 
-#include "BinaryTree.h"
+#include "BinaryTree.cpp"
 #include <iostream>
 #include <vector>
 #include <string>
 #include "catch.hpp"
 
 
-
+typedef std::pair<const int, std::string> pair_is;
+typedef std::pair<const std::string, double> pair_sd;
 
 TEST_CASE("Testing methos of class BT", "[BinaryTree]")
 {
-	std::cout << "Initializing objects" << std::cend;
+	std::cout << "Initializing objects" << std::endl;
 	BinaryTree<int,std::string> bt{};
-	BinaryTree<std::string,std::vector<double>> bt2{};
+	BinaryTree<std::string,double> bt2{};
 	int keys[10]{1,2,3,4,5,6,7,8,9,10};
     std::string values[10]{"a","b","c","d","e","f","g","h","i","l"};
 	for (int i = 0; i < 10; ++i)
 	{
 		bt.insert(keys[i], values[i]);
-		bt2.insert(values[i], std::vector<double>(10, i));
+		bt2.insert(values[i], keys[i] + 0.1 );
 	}
 
-	SCENARIO("Testing clear and find method")
+	SECTION("Testing clear and find method")
 	{
-		REQUIRE((*(bt.find(1)).)second == "a");
-		REQUIRE((*(bt2.find("a")).)second == std::vector<double>(10, 1))
+		pair_is p1{1, "a"};
+		pair_sd p2{"a", 1.1};
+		REQUIRE(*bt.find(1) == p1);
+		REQUIRE(*bt2.find("a") == p2);
 		bt.clear();
 		bt2.clear();
-		REQUIRE(bt.find(1) == nullptr);
-		REQUIRE(bt2.find("a") == nullptr)
+		REQUIRE(bt.find(1) == bt.end());
+		REQUIRE(bt2.find("a") == bt2.end());
 	}
 
-	SCENARIO("Testing copy constructor")
+	SECTION("Testing copy constructor")
 	{
+		pair_is p1{1, "a"};
+		pair_sd p2{"a", 1.1};
 		BinaryTree<int,std::string> bt3{bt};
-		BinaryTree<std::string,std::vector<double>> bt4{bt2};
-		REQUIRE((*(bt.find(1)).second == (*(bt3.find(1)).second)
-		REQUIRE((*(bt2.find("a")).second == (*(bt4.find("a")).second)
-		CHECK(&(*(bt.find(1)) != &(*(bt3.find(1)))
-		CHECK(&(*(bt2.find("a")) != &(*(bt4.find("a")))
+		BinaryTree<std::string,double> bt4{bt2};
+		REQUIRE(*bt.find(2) == *bt3.find(2));
+		REQUIRE(*bt2.find("a") == *bt4.find("a"));
+		CHECK(&(*bt.find(1)) != &(*bt3.find(1)));
+		CHECK(&(*bt2.find("a")) != &(*bt4.find("a")));
 		bt.clear();
-		bt3.clear();
-		REQUIRE((*(bt3.find(1)).)second == "a");
-		REQUIRE((*(bt4.find("a")).)second == std::vector<double>(10, 1))
+		bt2.clear();
+		REQUIRE(*bt3.find(1) == p1 );
+		REQUIRE(*bt4.find("a") == p2);
+	}
+	SECTION("Test move constructor, move assignment and copy assignment")
+	{
+		pair_is p1(2,"b");
+		pair_sd p2("b",2.1);
+		BinaryTree<int,std::string> bt_copy;
+		BinaryTree<std::string,double> bt2_copy;
+		bt_copy = bt;
+		bt2_copy = bt2;
+		REQUIRE(*bt_copy.find(2) == p1);
+		REQUIRE(*bt2_copy.find("b") == p2);
+		CHECK(&(*bt.find(2)) != &(*bt_copy.find(2)));
+		CHECK(&(*bt2.find("b")) != &(*bt2_copy.find("b")));
+		BinaryTree<int,std::string> bt3 = std::move(bt);
+		BinaryTree<std::string,double> bt4 = std::move(bt2);
+		CHECK(bt.find(1) == bt.end());
+		REQUIRE(*bt3.find(2) == *bt_copy.find(2));
+		REQUIRE(*bt4.find("b") == *bt2_copy.find("b"));
+
 	}
 }
+
 
 
 /*
