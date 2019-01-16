@@ -12,6 +12,7 @@ int main(int arcv, char *argv[])
 
 	std::srand(0);
 	const size_t N = (arcv<2) ? 10000 : atoi(argv[1]);
+	const bool full_test = (arcv<3) ? true : false;
 	const size_t load_size = 2; //how many byte for each data
 
 	BinaryTree<const int, int> linked_list_tree;
@@ -25,16 +26,25 @@ int main(int arcv, char *argv[])
 	
 	//////////// Initializing trees ////////////
 	std::cout << "size = "<< N << std::endl;
-	std::cout << "initializing trees . . ." << std::endl;
+	
+
+	if(full_test){
+	std::cout << "initializing linked_list_tree . . ." << std::endl;
 	for(int i = 0; i<N; i++)
 	{
 		linked_list_tree.insert(i,0);
+	}
+	}
+
+	std::cout << "initializing std::map  . . ." << std::endl;
+	for(int i = 0; i<N; i++)
+	{
 		map.insert(std::make_pair(i,0));
 	}
 
 	
 
-	balanced_tree = linked_list_tree;
+	
 
 
 
@@ -52,7 +62,7 @@ int main(int arcv, char *argv[])
 		random_tree.insert(e,0);
 	}
 
-	
+	balanced_tree = random_tree;
 
 	// balancing one of the trees
 	std::cout << "balancing tree . . ." << std::endl;
@@ -72,16 +82,22 @@ int main(int arcv, char *argv[])
 
 	std::cout << "accessing all the elements . . ." << std::endl;
 
-
-	//LINKED LIST TREE
+	//just for initializing them
 	auto begin = std::chrono::high_resolution_clock::now();
+	auto end = std::chrono::high_resolution_clock::now();
+	auto total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
+	
+	//LINKED LIST TREE
+	if(full_test) {
+	begin = std::chrono::high_resolution_clock::now();
 	for(auto e : random_permutation_vector)
 	{
 		linked_list_tree.find(e);
 	}
-	auto end = std::chrono::high_resolution_clock::now();
-	auto total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
-	std::cout << "LINKED_LIST_TREE: " << total << "ms, average = " << total/N << "us" << std::endl;
+	end = std::chrono::high_resolution_clock::now();
+	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
+	std::cout << "LINKED_LIST_TREE: " << total << "us, average = " << total/N << "us" << std::endl;
+	}
 
 	//RANDOM TREE
 	begin = std::chrono::high_resolution_clock::now();
