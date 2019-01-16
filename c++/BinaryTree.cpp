@@ -39,7 +39,7 @@ class BinaryTree
 
     //**optional** implement the `value_type& operator[](const key_type& k)` function int the `const` and `non-const` versions). This functions, should return a reference to the value associated to the key `k`. If the key is not present, a new node with key `k` is allocated having the value `value_type{}`
     V& operator[](const K& key) noexcept;
-    const V& operator[](const K& key) const noexcept {return (*this)[key];}
+    const V& operator[](const K& key) const noexcept;
 
     class Iterator;
     class ConstIterator;
@@ -240,14 +240,13 @@ V& BinaryTree<K,V,F>::operator[](const K& key) noexcept
     return (*find(key)).second; 
 }
 
-/*
 template <class K, class V, class F>
 const V& BinaryTree<K,V,F>::operator[](const K& key) const noexcept
 {
-	Iterator s_res = find(key);
-	if(s_res!=end()) return *s_res;
+    Iterator s_res = find(key);
+    if(s_res != end()) return (*s_res).second;
 }
-*/
+
 
 template <class k,class v, class f> 
 std::ostream& operator<<(std::ostream& os, const BinaryTree<k,v,f>& bt)
@@ -289,8 +288,6 @@ std::vector<std::pair<const K, V>> BinaryTree<K,V,F>::to_list() const
 }
 
 
-
-
 template <class K, class V, class F>
 void BinaryTree<K,V,F>::balance()
 {
@@ -301,11 +298,10 @@ void BinaryTree<K,V,F>::balance()
 
 	BinaryTree<K,V> bt{};
 	for(auto e : list)
-		bt->insert(e.first,e.second);
+		bt.insert(e.first,e.second);
 	
-	this->root.reset(bt->root.get());
+	(*this) = std::move(bt);
 	
 }
-
 
 
