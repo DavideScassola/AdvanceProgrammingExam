@@ -1,3 +1,14 @@
+/**
+ * @file BinaryTreeRec.cpp
+ * @author Salvatore Milite and Davide Scassola 
+ * @brief Advanced Programming and Scientific Computing final c++ project
+ * @version 0.1
+ * @date 2019-01-17
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
 #include <iostream>
 #include <memory>
 #include <algorithm>
@@ -5,21 +16,49 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Class that implements a binary tree 
+ * 
+ * The implementation is a simple not autobalancing Binary tree, it is constructed with
+ * a constant templeted key, a templated value and a templated comparing function (the default
+ *  is the < operator of the key type). It has a unique pointer to the root node.
+ * 
+ * @tparam K the key type
+ * @tparam V the value stored in the node
+ * @tparam std::less<K> the comparing function(defaul <)
+ */
 template <class K, class V, class F = std::less<K>>
 class BinaryTree
 {
+    /**
+     * @brief A structure that represent the node of the tree
+     * A private container that takes the unique pointers to the left and right child, a pointer
+     * to the parent and the entry, a pair with key and value.
+     */
     struct Node
-    {
+    {   
+        /** left child */
         std::unique_ptr<Node> _left;
+        /** right child */
         std::unique_ptr<Node> _right;
+        /** parent node */
         Node* _parent;
+        /** pair with key and value */
         std::pair<const K, V> entry; 
-        Node(const K& key, const V& value, Node* parent,Node* left = nullptr, Node* right = nullptr) : _left{left}, _right{right}, _parent{parent},entry{std::pair<K,V>(key,value)} {}
-        ~Node() = default;
+        /** construct a new Node object */
+        Node(const K& key, const V& value, Node* parent,Node* left = nullptr, Node* right = nullptr): 
+        _left{left}, _right{right}, _parent{parent},entry{std::pair<K,V>(key,value)} {}
+        /** default destructor */
+        ~Node() noexcept = default;
     };
-
+    /** Unique pointer to the root */
     std::unique_ptr<Node> root;
+    /**
+     * @brief A function to calculate the first node (following the key order)
+     * @return Node* a pointer to the first node
+     */
     Node* first_node() const;
+    /** The comparison operator, a functional object that returns a boolean */
     F cmp;
     std::pair< std::unique_ptr<Node>&, Node* > search (std::unique_ptr<Node>& node,const K& key, Node* old ); 
     void balance(std::vector<std::pair<const K, V>>& list, int begin, int end); 
@@ -27,12 +66,19 @@ class BinaryTree
     using s_pair = std::pair<std::unique_ptr<typename BinaryTree<K,V,F>::Node>&,typename BinaryTree<K,V,F>::Node*>;
 
     BinaryTree(F comparison = F{}): cmp{comparison} {}
-    ~BinaryTree() = default;
+    ~BinaryTree() noexcept = default;
     BinaryTree (const BinaryTree& bt) {this->copy_util(*bt.root);}
     BinaryTree& operator=(const BinaryTree& bt);
     BinaryTree(BinaryTree&& bt) noexcept = default;
     BinaryTree& operator=(BinaryTree&& bt) noexcept = default;
-    
+
+#ifdef __TESTBTFUN__
+    bool isBalanced(Node* node);
+    int height(Node* node);
+    Node* root_get() {return root.get();};
+#endif
+
+
     //clear the content of the tree
     void clear() {root.reset();}
 
@@ -40,8 +86,8 @@ class BinaryTree
     void balance();
 
     //**optional** implement the `value_type& operator[](const key_type& k)` function int the `const` and `non-const` versions). This functions, should return a reference to the value associated to the key `k`. If the key is not present, a new node with key `k` is allocated having the value `value_type{}`
-    V& operator[](const K& key) noexcept;
-    const V& operator[](const K& key) const noexcept;
+    V& operator[](const K& key);
+    const V& operator[](const K& key) const;
 
     class Iterator;
     class ConstIterator;
@@ -63,7 +109,11 @@ class BinaryTree
     ConstIterator cend() const { return ConstIterator{nullptr}; }
 
     //find a given key and return an iterator to that node. If the key is not found returns `end()`
-    Iterator find(const K& key) {Node* nod = search(root,key,nullptr).first.get(); return Iterator(nod);}
+    Iterator find(const K& key)
+    {
+        Iterator it = Iterator(search(root,key,nullptr).first.get());
+        return it;
+    }
     //used to insert a new pair key-value
     std::pair<Iterator,bool> insert (const K& key, const V& value);
     
@@ -71,8 +121,6 @@ class BinaryTree
     friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v,f>&);
 
     void copy_util(const BinaryTree::Node& old);
-
-    std::vector<std::pair<const K, V>> to_list() const;
 };
 
 template <class K, class V, class F>
@@ -106,10 +154,8 @@ typename BinaryTree<K,V,F>::Iterator& BinaryTree<K,V,F>::Iterator::operator++()
         pointed = pointed->_right.get();
         while(pointed->_left)
             pointed = pointed->_left.get();
-        return (*this);
     }
-    auto key = pointed->entry.first; 
-    while(pointed != nullptr && pointed->entry.first <= key)
+    else
         pointed = pointed->_parent;
     return (*this);
 }
@@ -169,12 +215,19 @@ typename BinaryTree<K, V, F>::s_pair BinaryTree<K,V,F>::search (std::unique_ptr<
 }
 
 template <class K, class V, class F>
-V& BinaryTree<K,V,F>::operator[](const K& key) noexcept 
+V& BinaryTree<K,V,F>::operator[](const K& key)  
 {
     Iterator s_res = find(key);
     if(s_res != end()) return (*s_res).second;
-    insert(key, V{});
-    return (*find(key)).second; 
+    return (*insert(key, V{}).first).second;
+}
+
+template <class K, class V, class F>
+const V& BinaryTree<K,V,F>::operator[](const K& key)  const
+{
+    Iterator s_res = find(key);
+    if(s_res != end()) return (*s_res).second;
+    throw std::runtime_error("You are trying to acces a non existing key");
 }
 
 template <class k,class v, class f> 
