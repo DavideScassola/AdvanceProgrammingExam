@@ -20,7 +20,7 @@
  * @brief Class that implements a binary tree 
  * 
  * The implementation is a simple not autobalancing Binary tree, it is constructed with
- * a constant templeted key, a templated value and a templated comparing function (the default
+ * a constant templated key, a templated value and a templated comparing function (the default
  *  is the < operator of the key type). It has a unique pointer to the root node.
  * 
  * @tparam K the key type
@@ -197,7 +197,7 @@ BinaryTree<K,V,F>& BinaryTree<K,V,F>::operator=(const BinaryTree& bt)
 }
 
 template <class K, class V,class F>
-std::pair<typename BinaryTree<K,V,F>::Iterator,bool> BinaryTree<K,V,F>::insert (const K& key, const V& value)
+std::pair<typename BinaryTree<K,V,F>::Iterator,bool> BinaryTree<K,V,F>::insert(const K& key, const V& value)
 {
     BinaryTree<K, V, F>::s_pair node_pair = search(root,key,nullptr);
     bool modified = node_pair.first ==nullptr;

@@ -5,7 +5,8 @@
 #include <vector>
 #include <map>
 #include <chrono>
-#include "BinaryTree.cpp"
+#include "../BinaryTreeRec.cpp"
+#include <fstream>
 
 int main(int arcv, char *argv[])
 {
@@ -22,19 +23,19 @@ int main(int arcv, char *argv[])
 
 	
 	//////////// Initializing trees ////////////
-	std::cout << "size = "<< N << std::endl;
+	std::cout << N << ";";
 	
 
 	if(full_test)
 	{
-		std::cout << "initializing linked_list_tree . . ." << std::endl;
+		//std::cout << "initializing linked_list_tree . . ." << std::endl;
 		for(int i = 0; i<N; i++)
 		{
 			linked_list_tree.insert(i,i);
 		}
 	}
 
-	std::cout << "initializing std::map  . . ." << std::endl;
+
 	for(int i = 0; i<N; i++)
 	{
 		map.insert(std::make_pair(i,i));
@@ -49,16 +50,20 @@ int main(int arcv, char *argv[])
 
 	
 	// initializing random tree
-	std::cout << "initializing random tree . . ." << std::endl;
+
 	for(auto e : random_permutation_vector)
 	{
 		random_tree.insert(e,e);
 	}
 
 	// balancing one of the trees
-	std::cout << "balancing tree . . ." << std::endl;
+
 	balanced_tree = random_tree;
 	balanced_tree.balance();
+	
+	const BinaryTree<const int, double> &t = balanced_tree;
+	balanced_tree[2] = 12;
+	
 
 	
 	//////////////////////////////////////////////////////////////////////////////////////
@@ -76,9 +81,9 @@ int main(int arcv, char *argv[])
 	auto end = std::chrono::high_resolution_clock::now();
 	auto total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
 
-
-
-	std::cout << "accessing all the elements . . ." << std::endl;
+	//
+	std::vector<double> container;
+	
 
 	//LINKED LIST TREE
 	if(full_test)
@@ -86,42 +91,56 @@ int main(int arcv, char *argv[])
 		begin = std::chrono::high_resolution_clock::now();
 		for(auto e : random_permutation_vector)
 		{
-			linked_list_tree.find(e);
+			container.push_back(linked_list_tree[e]);
 		}
 		end = std::chrono::high_resolution_clock::now();
 		total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
-		std::cout << "LINKED_LIST_TREE: " << total << "us, average = " << total/N << "us" << std::endl;
+		std::cout << "LINKED_LIST_TREE: " << total/double(N) << std::endl;
 	}
 
 	//RANDOM TREE
 	begin = std::chrono::high_resolution_clock::now();
 	for(auto e : random_permutation_vector)
 	{
-		random_tree.find(e);
+		container.push_back(random_tree[e]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
-	std::cout << "RANDOM_TREE: " << total << "us, average = " << total/double(N) << "us" << std::endl;
+	std::cout << "RANDOM_TREE: " << total/double(N)<< ";";
 
 	//BALANCED TREE
 	begin = std::chrono::high_resolution_clock::now();
 	for(auto e : random_permutation_vector)
 	{
-		balanced_tree.find(e);
+		container.push_back(balanced_tree[e]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
-	std::cout << "BALANCED_TREE: " << total << "us, average = " << total/double(N) << "us" << std::endl;
+	std::cout << "BALANCED_TREE: " << total/double(N) << ";";
 
 	//MAP
 	begin = std::chrono::high_resolution_clock::now();
 	for(auto e : random_permutation_vector)
 	{
-		map.find(e);
+		container.push_back(map[e]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
-	std::cout << "MAP: " << total << "us, average = " << total/double(N) << "us" << std::endl;
+	std::cout << "MAP: " << total/double(N) << ";" << std::endl;
+
+	double s{0};
+	for(double x: container)
+		s+=x;
+
+	//std::cout << s << std::endl;
+
+	/*
+	 ofstream myfile;
+         myfile.open ("example.txt");
+ 	 myfile << "Writing this to a file.\n";
+ 	 myfile.close();
+	*/
+	
 	
     return 0;
 }
