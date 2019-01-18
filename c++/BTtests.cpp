@@ -24,7 +24,7 @@ TEST_CASE("Testing methos of class BT", "[BinaryTree]")
 	for (int i = 0; i < 10; ++i)
 	{
 		bt.insert(keys[i], values[keys[i]]);
-		bt2.insert(values[keys[i]], keys[i] + 0.1 );
+		bt2.insert(std::pair<const std::string, double>{values[keys[i]], keys[i] + 0.1 });
 	}
 	std::cout << bt << std::endl;
 	SECTION("Testing clear and find method")
