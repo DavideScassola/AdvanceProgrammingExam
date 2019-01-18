@@ -11,8 +11,6 @@ BinaryTree.so: $(OBJ)
 %.o:%.cc
 	$(CXX) -fpic -D$(LANG) -o $@ -c $< -Iinclude
 
-src/BinaryTree.o: include/BinaryTree.h
-
 format: $(SRC) include/BinaryTree.h
 	@clang-format -i $^ 2>/dev/null || echo "Please install clang-format to run this commands"
 
