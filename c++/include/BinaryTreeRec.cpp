@@ -195,6 +195,7 @@ BinaryTree<K,V,F>& BinaryTree<K,V,F>::operator=(const BinaryTree& bt)
     root.reset();
     auto tmp = bt;
     (*this) = std::move(tmp);
+    return *this;
 }
 
 template <class K, class V,class F>

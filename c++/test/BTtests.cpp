@@ -1,6 +1,5 @@
-#define CATCH_CONFIG_MAIN
 #define __TESTBTFUN__
-
+#define CATCH_CONFIG_MAIN
 #include <iostream>
 #include <vector>
 #include <string>

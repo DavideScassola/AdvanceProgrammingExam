@@ -1,20 +1,22 @@
 CXX = c++
+SRC = benchmark/Performance_test.cpp
+INCLUDE = include/BinaryTreeRec.cpp
+TESTINC = include/private/TestFunction.h
+TEST = test/BTtests.cpp  
 
-SRC = src/BinaryTree.cc
-OBJ = $(SRC:.cc=.o)
+all: bench unitTest
 
-all: BinaryTree.so
+bench: $(SRC) $(INCLUDE)
+	$(CXX) -O3 -o $@ $^ -Iinclude -Wall -Wextra
 
-BinaryTree.so: $(OBJ)
-	$(CXX) -shared -o $@ $^
-
-%.o:%.cc
-	$(CXX) -fpic -D$(LANG) -o $@ -c $< -Iinclude
+unitTest: $(TEST) $(INCLUDE) $(TESTINC)
+	$(CXX) -o $@  $^  -Itest -Iinclude/private -Iinclude -Wall -Wextra
 
 format: $(SRC) include/BinaryTree.h
 	@clang-format -i $^ 2>/dev/null || echo "Please install clang-format to run this commands"
 
 clean:
-	@rm -f *~ */*~ BinaryTree.so src/*.o
+	@rm -f *~ */*~ benchmark uniTtest
+
 
 .PHONY: clean all format
