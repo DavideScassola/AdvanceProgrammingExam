@@ -116,6 +116,7 @@ class BinaryTree
     }
     //used to insert a new pair key-value
     std::pair<Iterator,bool> insert (const K& key, const V& value);
+    std::pair<Iterator,bool> insert (std::pair<const K&, const V&> p) {return insert(p.first,p.second);}
     
     template <class k,class v, class f> 
     friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v,f>&);
