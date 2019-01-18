@@ -1,7 +1,7 @@
 CXX = c++
 SRC = benchmark/Performance_test.cpp
 INCLUDE = include/BinaryTreeRec.cpp
-TESTINC = include/private/TestFunction.h
+TESTINC = include/private/TestFunction.h 
 TEST = test/BTtests.cpp  
 
 all: bench unitTest
