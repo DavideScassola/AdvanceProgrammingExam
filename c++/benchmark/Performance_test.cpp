@@ -11,9 +11,8 @@ int main(int arcv, char *argv[])
 {
 
 	std::srand(0);
-	const size_t N = (arcv<2) ? 10000 : atoi(argv[1]);
+	const int N = (arcv<2) ? 10000 : atoi(argv[1]);
 	const bool full_test = (arcv<3) ? true : false;
-	//const size_t load_size = 2; //how many byte for each data
 
 	BinaryTree<const int, double> linked_list_tree;
 	BinaryTree<const int, double> balanced_tree;
