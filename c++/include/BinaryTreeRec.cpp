@@ -52,7 +52,7 @@ class BinaryTree
         ~Node() noexcept = default;
     };
     /** Unique pointer to the root */
-    std::unique_ptr<Node> root;
+    std::unique_ptr<Node> root = nullptr;
     /**
      * @brief A function to calculate the first node (following the key order)
      * @return Node* a pointer to the first node
@@ -96,7 +96,7 @@ class BinaryTree
 
     BinaryTree(F comparison = F{}): cmp{comparison} {}
     ~BinaryTree() noexcept = default;
-    BinaryTree (const BinaryTree& bt) {this->copy_util(*bt.root);}
+    BinaryTree (const BinaryTree& bt){if(bt.root != nullptr) this->copy_util(*bt.root);}
     BinaryTree& operator=(const BinaryTree& bt);
     BinaryTree(BinaryTree&& bt) noexcept = default;
     BinaryTree& operator=(BinaryTree&& bt) noexcept = default;

@@ -84,7 +84,7 @@ int main(int arcv, char *argv[])
 	//////////// Performance measuring ////////////
 
 	// reshuffling for random access
-	std::random_shuffle ( random_permutation_vector.begin(), random_permutation_vector.begin());
+	std::random_shuffle ( random.begin(), random.end());
 
 	std::cout << "accessing all the elements . . ." << std::endl;
 
