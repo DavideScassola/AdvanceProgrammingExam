@@ -55,11 +55,24 @@ The const operator[] return a std::runtime\_exception if a non valid key is acce
 There are also some test methods which are defined and declared only when loaded in the unit test that find the height of the tree and weather it is balanced or not. 
 The unit test makes use of the catch2 unit testing framework, which is a collection of macros stored in the \emph{catch.hpp} file and speeds up the writing of the test code. 
 
-%\includegraphics[height=5cm]{/code_2.png}\\
-
-
 \section*{Performance measures}
+In order to evaluate the performances of our implementation of the binary tree, we ran some tests.
+The test invlolves four different types of tree: a "linked-list" tree, created inserting elements orderly (with respect to the key), a random tree, created inserting elements wich keys were in random order, a balanced tree, created copying and balancing the random tree, and finally the std::map.
+Since the performances of the linked-list-tree were much worse than the one of the other trees, we decided to ran the test for different sizes for these two different cases, in this way we can run significant tests for the faster trees . 
+The benchmark consists (for each tree) in accessing all the elements and measuring the average access time:
+In the case of the linked-list-tree we expect to see a time that is $O(n)$ with respect to the tree size, for the balanced and the std::map we expect to see $O(\log_2 n)$. 
+The results are shown in microseconds, and code is compiled with the level O3 of optimisation.\\
 
+%\includegraphics[height=5cm]{/ll_bench.png}\\
+
+%\includegraphics[height=5cm]{/rbm_bench.png}\\
+
+As said before the linked-list-tree is much slower, about 100 times slower for a tree size that is 10 times smaller.
+From the plots it seems that the previous considerations about the time complexity hold.
+We can se that even though in this case balancing the tree improves dramatically the performances (probably by a factor greater that 100), also the random tree is quite good and in this case the speedup is less than 2.
+
+
+%speculazioni su come sia possibile che abbiamo battuto la std::map
 
 
 \vspace{2cm}

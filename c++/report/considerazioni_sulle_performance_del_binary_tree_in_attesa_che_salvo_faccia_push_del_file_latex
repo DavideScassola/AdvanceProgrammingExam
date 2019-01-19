@@ -1,8 +1,0 @@
-In order to evaluate the performances of our implementation of the binary tree, we ran some tests.
-The test invlolves four different types of tree: a "linked-list" tree, created inserting elements orderly (with respect to the key), a random tree, created inserting elements wich keys were in random order, a balanced tree, created copying and balancing the random tree, and finally the std::map.
-
-Since the performances of the linked-list-tree were much worse than the one of the other trees, we decided to ran the test for different sizes for these two different cases, in this way we can run significant tests for the faster trees . 
-
-The benchmark consists (for each tree) in accessing all the elements.
-
-In the case of the linked-list-tree we expect to see a time that is O(n) with respect to the tree size, for the balanced and the std::map we expect to see O(log n).
