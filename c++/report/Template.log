@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.21)  19 JAN 2019 10:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.21)  19 JAN 2019 17:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -130,18 +130,18 @@ Package: listings 2015/06/04 1.6 (Carsten Heinz)
 (./Template.aux)
 \openout1 = `Template.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -244,47 +244,79 @@ e
 
 \c@lstlisting=\count106
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 18.
+(Font)              <12> on input line 19.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 18.
+(Font)              <8> on input line 19.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 18.
+(Font)              <6> on input line 19.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 25.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 32.
+(Font)              <10.95> on input line 26.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 33.
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 32.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 33.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 59--65
+Underfull \hbox (badness 10000) in paragraph at lines 63--66
 
  []
 
-[2] (./Template.aux) ) 
+<./LL_vs_BT.png, id=13, 615.80063pt x 420.82219pt>
+File: ./LL_vs_BT.png Graphic file (type png)
+<use ./LL_vs_BT.png>
+Package pdftex.def Info: ./LL_vs_BT.png  used on input line 67.
+(pdftex.def)             Requested size: 416.3616pt x 284.52756pt.
+
+Overfull \hbox (6.57025pt too wide) in paragraph at lines 67--68
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--68
+
+ []
+
+[2]
+<./map_vs_BT.png, id=18, 615.80063pt x 420.82219pt>
+File: ./map_vs_BT.png Graphic file (type png)
+<use ./map_vs_BT.png>
+Package pdftex.def Info: ./map_vs_BT.png  used on input line 69.
+(pdftex.def)             Requested size: 416.3616pt x 284.52756pt.
+
+Overfull \hbox (6.57025pt too wide) in paragraph at lines 69--70
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--70
+
+ []
+
+[3 <./LL_vs_BT.png (PNG copy)> <./map_vs_BT.png (PNG copy)>] (./Template.aux) )
+ 
 Here is how much of TeX's memory you used:
- 3827 strings out of 494880
- 54476 string characters out of 6179600
- 125228 words of memory out of 5000000
- 7110 multiletter control sequences out of 15000+600000
+ 3838 strings out of 494880
+ 54659 string characters out of 6179600
+ 125227 words of memory out of 5000000
+ 7118 multiletter control sequences out of 15000+600000
  8849 words of font info for 31 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  41i,6n,32p,1236b,219s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on Template.pdf (2 pages, 90512 bytes).
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmti10.pfb>
+Output written on Template.pdf (3 pages, 170334 bytes).
 PDF statistics:
- 43 PDF objects out of 1000 (max. 8388607)
- 30 compressed objects within 1 object stream
+ 48 PDF objects out of 1000 (max. 8388607)
+ 32 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
