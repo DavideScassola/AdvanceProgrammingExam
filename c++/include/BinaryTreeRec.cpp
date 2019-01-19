@@ -60,8 +60,37 @@ class BinaryTree
     Node* first_node() const;
     /** The comparison operator, a functional object that returns a boolean */
     F cmp;
-    std::pair< std::unique_ptr<Node>&, Node* > search (std::unique_ptr<Node>& node,const K& key, Node* old ); 
-    void balance(std::vector<std::pair<const K, V>>& list, int begin, int end); 
+
+    /**
+    * @brief auxiliary recursive function that implements the search algorithm used in insert and find functions
+    * 
+    * 
+    * Given a pointer to a node (branch), a key, and a pointer to a parent, this function look for the 
+    * correct place where to find (or to put) an element with this key in the subtree determined by the given node (branch).
+    * This function will return also the correct parent to assign to the node in the case of insertion.
+    * The correct parent is the first ancestor which key is greater than the actual node's key.
+    *
+    * @tparam std::unique_ptr<Node>& reference to a unique pointer to a node
+    * @tparam const K& reference to the key
+    * @tparam Node* pointer to the parent
+    * @return std::pair< std::unique_ptr<Node>&, Node* > pair with the reference to the target branch and the pointer to the correct parent
+    */
+    std::pair< std::unique_ptr<Node>&, Node* > search (std::unique_ptr<Node>& node,const K& key, Node* old );
+
+    /**
+    * @brief auxiliary recursive function that implements the balancing algorithm used in the balance() function
+    * 
+    * 
+    * Given a list of pair (key,value), this function insert in the tree the elements of the list from a given begin index to 
+    * a given end index, in an order such that the tree will be perfectly balanced. 
+    *
+    * @tparam std::vector<std::pair<const K, V>>& reference to the list
+    * @tparam int begin index
+    * @tparam int end index
+    * 
+    */
+    void balance(std::vector<std::pair<const K, V>>& list, int begin, int end);
+ 
     public:
     using s_pair = std::pair<std::unique_ptr<typename BinaryTree<K,V,F>::Node>&,typename BinaryTree<K,V,F>::Node*>;
 
@@ -82,20 +111,64 @@ class BinaryTree
     //clear the content of the tree
     void clear() {root.reset();}
 
-    //balance the tree
+    /**
+    * @brief function that balance the tree
+    * 
+    * 
+    * Calling this function the tree will be balanced. The underlying algorithm consists in extracting the list of
+    * al pairs (key,value) of the current tree, clearing the current tree, and then inserting all the pairs in such
+    * an order that the tree will balanced.
+    *
+    */
     void balance();
 
-    //**optional** implement the `value_type& operator[](const key_type& k)` function int the `const` and `non-const` versions). This functions, should return a reference to the value associated to the key `k`. If the key is not present, a new node with key `k` is allocated having the value `value_type{}`
+    /**
+    * @brief operator that return the value corresponding to a given key
+    * 
+    * 
+    * If the given key corresponds to an element in the tree this operator will return the value corresponding to
+    * that element. If not present, a new pair with the given key and a default value will be inserted in the tree, 
+    * and the a reference to this new value will be returned.
+    *
+    * @tparam const K& the key of the searched value 
+    * @return V& reference to the value
+    */
     V& operator[](const K& key);
+
+     /**
+    * @brief operator that return the value corresponding to a given key
+    * 
+    * 
+    * The functioning of this operator is analogous to the non const one, but this time if an element corresponding 
+    * to the given key is not found, then an exception will be thrown. In this way the tree will be surely unmodified. 
+    *
+    * @tparam const K& the key of the searched value 
+    * @return const V& reference to the value
+    */
     const V& operator[](const K& key) const;
 
     class Iterator;
     class ConstIterator;
 
-    //return an `iterator` to the first node (which likely will not be the root node)
+     /**
+    * @brief a function that return an Iterator to the first element
+    * 
+    * 
+    * This function returns the iterator to the first element, in the sense that it correspond to the element
+    * for wich the key is the minimum between the all the keys according to the tree comparing function
+    *
+    * @return Iterator iterator to the first element
+    */
     Iterator begin() {Node* fn = first_node(); return Iterator{fn};}
 
-    //return a proper `iterator`
+     /**
+    * @brief a function that return an Iterator to the end
+    * 
+    * 
+    * This function returns an iterator initialized with nullptr that represents the end 
+    *
+    * @return Iterator iterator to the end
+    */
     Iterator end() { return Iterator{nullptr}; }
 
     //return a `const_iterator` to the first node
