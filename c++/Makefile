@@ -1,6 +1,6 @@
 CXX = c++
 SRC = benchmark/Performance_test.cpp
-INCLUDE = include/BinaryTreeRec.cpp
+INCLUDE = include/BinaryTreeRec.h
 TESTINC = include/private/TestFunction.h 
 TEST = test/BTtests.cpp  
 
@@ -15,8 +15,11 @@ unitTest: $(TEST) $(INCLUDE) $(TESTINC)
 format: $(SRC) include/BinaryTree.h
 	@clang-format -i $^ 2>/dev/null || echo "Please install clang-format to run this commands"
 
+document: 
+	@doxygen documentation/Doxyfile
+
 clean:
-	@rm -f *~ */*~ benchmark uniTtest
+	@rm -rf *~ */*~ bench unitTest documentation/html
 
 
-.PHONY: clean all format
+.PHONY: clean all format document

@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 #include <chrono>
-#include "BinaryTreeRec.cpp"
+#include "BinaryTreeRec.h"
 
 int main(int arcv, char *argv[])
 {

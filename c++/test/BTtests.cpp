@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "BinaryTreeRec.cpp"
+#include "BinaryTreeRec.h"
 #include "TestFunction.h"
 #include "catch.hpp"
 
@@ -14,7 +14,6 @@ typedef std::pair<const std::string, double> pair_sd;
 TEST_CASE("Testing methos of class BT", "[BinaryTree]")
 {
 	// initialize the trees which is also a test of the custom constructor and insert method
-	std::cout << "Initializing objects" << std::endl;
 	BinaryTree<int,std::string> bt{};
 	BinaryTree<std::string,double> bt2{};
 	std::vector<int> keys{0,1,2,3,4,5,6,7,8,9};
@@ -25,7 +24,6 @@ TEST_CASE("Testing methos of class BT", "[BinaryTree]")
 		bt.insert(keys[i], values[keys[i]]);
 		bt2.insert(std::pair<const std::string, double>{values[keys[i]], keys[i] + 0.1 });
 	}
-	std::cout << bt << std::endl;
 	SECTION("Testing clear and find method")
 	{
 		pair_is p1{0, "a"};
@@ -157,6 +155,17 @@ TEST_CASE("Testing methos of class BT", "[BinaryTree]")
 		bt2.balance();
 		REQUIRE(bt.isBalanced(bt.root_get()) == true);
 		REQUIRE(bt2.isBalanced(bt2.root_get()) == true);
+	}
+	SECTION("Test insert method with duplicated key")
+	{
+		auto resul = bt.insert(0,"castoro");
+		if (!resul.second)
+					(*resul.first).second = "castoro";
+		REQUIRE(bt[0] == "castoro");
+		auto resul2 = bt2.insert("b",3.14);
+		if (!resul2.second)
+					(*resul2.first).second = 3.14;
+		REQUIRE(bt2["b"] == 3.14);
 	}
 	SECTION("Test the custom comparison function")
 	{

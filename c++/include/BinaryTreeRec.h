@@ -72,7 +72,7 @@ class BinaryTree
     *
     * @tparam std::unique_ptr<Node>& reference to a unique pointer to a node
     * @tparam const K& reference to the key
-    * @tparam Node* pointer to the parent
+    * @tparam Node* pointer to the right parent for the insertion
     * @return std::pair< std::unique_ptr<Node>&, Node* > pair with the reference to the target branch and the pointer to the correct parent
     */
     std::pair< std::unique_ptr<Node>&, Node* > search (std::unique_ptr<Node>& node,const K& key, Node* old );
@@ -90,20 +90,69 @@ class BinaryTree
     * 
     */
     void balance(std::vector<std::pair<const K, V>>& list, int begin, int end);
+    /**
+     * @brief An utility for the copy constructor
+     * It starts a recursive copy of a BT starting from a given node(ideally the root). It simply insert the nodes in the caller object in the same
+     * order it finds them in the tree with root = old.  
+     * @param old the node from which to start the copy. If is root then it copy an entire tree, else just a subtree
+     */
+    void copy_util(const BinaryTree::Node& old);
  
     public:
     using s_pair = std::pair<std::unique_ptr<typename BinaryTree<K,V,F>::Node>&,typename BinaryTree<K,V,F>::Node*>;
 
+    /**
+     * @brief Construct a new Binary Tree object
+     * 
+     * @param comparison the functional object used for ordering
+     */
     BinaryTree(F comparison = F{}): cmp{comparison} {}
+    /**
+     * @brief Destroy the Binary Tree object
+     * 
+     */
     ~BinaryTree() noexcept = default;
+    /**
+     * @brief Creates a deep copy of a binary tree
+     * 
+     * @param bt the tree to be copied
+     */
     BinaryTree (const BinaryTree& bt){if(bt.root != nullptr) this->copy_util(*bt.root);}
+    /**
+     * @brief Copy assignement
+     * 
+     * @param bt the tree to be copied
+     * @return BinaryTree& 
+     */
     BinaryTree& operator=(const BinaryTree& bt);
     BinaryTree(BinaryTree&& bt) noexcept = default;
     BinaryTree& operator=(BinaryTree&& bt) noexcept = default;
-
+/**
+ * @brief These functions works only if you deefine __TESTBTFUN__ and include "TestFunctions.h"
+ * 
+ */
 #ifdef __TESTBTFUN__
+    /**
+     * @brief Finds out if the tree is balanced
+     * 
+     * It compares recursively the hegihts of all the branches, and if the difference in height is <= 1, it returns true 
+     * @param node the starting node, usually the root
+     * @return true if the tree is balanced
+     * @return false if the tree is not balanced
+     */
     bool isBalanced(Node* node);
+    /**
+     * @brief Returns the height of a tree or subtree starting by a specific node
+     * 
+     * @param node the node from where to stard
+     * @return int the height 
+     */
     int height(Node* node);
+    /**
+     * @brief A getter method for the root node
+     * 
+     * @return Node* a pointer to the root node
+     */
     Node* root_get() {return root.get();};
 #endif
 
@@ -141,7 +190,7 @@ class BinaryTree
     * 
     * The functioning of this operator is analogous to the non const one, but this time if an element corresponding 
     * to the given key is not found, then an exception will be thrown. In this way the tree will be surely unmodified. 
-    *
+    * @throws runtime_errors
     * @tparam const K& the key of the searched value 
     * @return const V& reference to the value
     */
@@ -162,39 +211,79 @@ class BinaryTree
     Iterator begin() {Node* fn = first_node(); return Iterator{fn};}
 
      /**
-    * @brief a function that return an Iterator to the end
+    * @brief A function that return an Iterator to one past the last node
     * 
     * 
-    * This function returns an iterator initialized with nullptr that represents the end 
+    * This function returns an iterator initialized with nullptr that represents the end of the BinaryTree
     *
     * @return Iterator iterator to the end
     */
     Iterator end() { return Iterator{nullptr}; }
 
-    //return a `const_iterator` to the first node
+    /**
+     * @brief A constant iterator version of begin()
+     * 
+     * @return ConstIterator constant iterator to the first node
+     */
     ConstIterator begin() const {Node* fn = first_node(); return ConstIterator{fn};}
 
-    //return a proper `const_iterator`
+    /**
+     * @brief A constant interator version of end()
+     * 
+     * @return ConstIterator returns a constant iterator to the end of the Data Structure
+     */
     ConstIterator end() const { return ConstIterator{nullptr}; }
 
+    /**
+     * @brief Same as ConstIterator begin() but explicit
+     * 
+     * @return ConstIterator constant iterator to the first node
+     */
     ConstIterator cbegin() const {Node* fn = first_node(); return ConstIterator{fn};}
 
+    /**
+     * @brief Same as ConstIterator end() but explicit
+     * 
+     * @return ConstIterator constant iterator to the end of the Data Structure 
+     */
     ConstIterator cend() const { return ConstIterator{nullptr}; }
 
-    //find a given key and return an iterator to that node. If the key is not found returns `end()`
+    /**
+     * @brief Finds a value with a given key and returns an iterator to it
+     * @param key the key of the node to be searched
+     * @return Iterator an Iterator to the node with the key or to end() if its not present  
+     */
     Iterator find(const K& key)
     {
         Iterator it = Iterator(search(root,key,nullptr).first.get());
         return it;
     }
-    //used to insert a new pair key-value
+    /**
+     * @brief Insert a new node with given key and value
+     * It returns a std::pair with an iterator to the node and a bool. If the key is not present, the new node is effectively added and the bool as value true. In case
+     * the key was already in the tree the bool has value false, and the user has to change the node value manually from the iterator. 
+     * @param key the key of the new node
+     * @param value the value of the new node
+     * @return std::pair<Iterator,bool> a pair with an iterator to the inserted (or where the key is already present) node and a bool that indicates if the new has been added
+     */
     std::pair<Iterator,bool> insert (const K& key, const V& value);
+    /**
+     * @brief An insert which takes directly an std::pair with the right types
+     * 
+     * @param p the std::pair to be added in the new node 
+     * @return std::pair<Iterator,bool> saame as the other insert()
+     */
     std::pair<Iterator,bool> insert (std::pair<const K&, const V&> p) {return insert(p.first,p.second);}
     
     template <class k,class v, class f> 
+    /**
+     * @brief Overloading of the operator<< for printing and writing on files
+     * 
+     * @return std::ostream& 
+     */
     friend std::ostream& operator<<(std::ostream&, const BinaryTree<k,v,f>&);
 
-    void copy_util(const BinaryTree::Node& old);
+   
 };
 
 template <class K, class V, class F>
@@ -223,13 +312,17 @@ class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_t
 template <class K, class V, class F>
 typename BinaryTree<K,V,F>::Iterator& BinaryTree<K,V,F>::Iterator::operator++()
 {
+    // when you can go left
     if(pointed->_right != nullptr)
     {   
         pointed = pointed->_right.get();
+        // and than down to the smaller key on that branch
         while(pointed->_left)
             pointed = pointed->_left.get();
     }
+    // else go up
     else
+    // we can do this thanks to our implementation of iterator()
         pointed = pointed->_parent;
     return (*this);
 }
@@ -238,6 +331,7 @@ template <class K, class V, class F>
 typename BinaryTree<K,V,F>::Node* BinaryTree<K,V,F>::first_node() const
 {
     Node* node = root.get();
+    //find the leftmost node
     while(node->_left != nullptr)
         node = node->_left.get();
     return node;
@@ -275,7 +369,9 @@ template <class K, class V,class F>
 std::pair<typename BinaryTree<K,V,F>::Iterator,bool> BinaryTree<K,V,F>::insert(const K& key, const V& value)
 {
     BinaryTree<K, V, F>::s_pair node_pair = search(root,key,nullptr);
+    // Look if the key is already present and update the second return value
     bool modified = node_pair.first ==nullptr;
+    // if not present insert the new node
     if(modified) node_pair.first.reset(new Node(key,value,node_pair.second));
     return std::pair<Iterator,bool>{Iterator{node_pair.first.get()},modified};
 }
@@ -283,9 +379,11 @@ std::pair<typename BinaryTree<K,V,F>::Iterator,bool> BinaryTree<K,V,F>::insert(c
 template <class K, class V,class F>
 typename BinaryTree<K, V, F>::s_pair BinaryTree<K,V,F>::search (std::unique_ptr<typename BinaryTree<K,V,F>::Node>& node, const K& key, typename BinaryTree<K,V,F>::Node* old)
 {
+    //stop when the key is present or we have reached the right insertion node
     if(node == nullptr || (!cmp(node->entry.first,key) && !cmp(key,node->entry.first)) )
         return BinaryTree<K, V, F>::s_pair{node,old};       
     else 
+        //if twe are on a right node, our parent is our father parent
         return cmp(node->entry.first, key) ? search(node->_right,key, node->_parent) : search(node->_left,key, node.get());
 }
 
@@ -302,6 +400,7 @@ const V& BinaryTree<K,V,F>::operator[](const K& key)  const
 {
     Iterator s_res = find(key);
     if(s_res != end()) return (*s_res).second;
+    //is a constant method, if it does not find the key it throws an exception
     throw std::runtime_error("You are trying to acces a non existing key");
 }
 
@@ -319,8 +418,9 @@ void BinaryTree<K,V,F>::balance()
 {
 	if(root == nullptr) return;
     std::vector<std::pair<const K, V>> list(begin(), end());
+    //free some space
     clear();
-	balance(list, 0, int(list.size() - 1));
+	balance(list, 0, int(list.size()) - 1);
 }
 
 template <class K, class V, class F>
@@ -328,7 +428,9 @@ void BinaryTree<K,V,F>::balance(std::vector<std::pair<const K, V>>& list, int be
 {
     if(begin > end) return;
     int middle = begin + (end - begin)/2;
+    //int middle = (begin + end)/2;
     insert(list[middle].first, list[middle].second);
+    //halve the list and do the same till the end
     balance(list, begin, middle - 1);
     balance(list, middle + 1, end);
 }
