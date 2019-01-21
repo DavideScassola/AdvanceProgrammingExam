@@ -59,7 +59,7 @@ class BinaryTree
      */
     Node* first_node() const;
     /** The comparison operator, a functional object that returns a boolean */
-    F cmp;
+    F cmp = F{};
 
     /**
     * @brief auxiliary recursive function that implements the search algorithm used in insert and find functions
@@ -96,17 +96,15 @@ class BinaryTree
      * order it finds them in the tree with root = old.  
      * @param old the node from which to start the copy. If is root then it copy an entire tree, else just a subtree
      */
-    void copy_util(const BinaryTree::Node& old);
+    void copy_util(const BinaryTree::Node& old, std::unique_ptr<Node>& copied);
  
     public:
     using s_pair = std::pair<std::unique_ptr<typename BinaryTree<K,V,F>::Node>&,typename BinaryTree<K,V,F>::Node*>;
 
     /**
      * @brief Construct a new Binary Tree object
-     * 
-     * @param comparison the functional object used for ordering
      */
-    BinaryTree(F comparison = F{}): cmp{comparison} {}
+    BinaryTree() = default;
     /**
      * @brief Destroy the Binary Tree object
      * 
@@ -117,7 +115,7 @@ class BinaryTree
      * 
      * @param bt the tree to be copied
      */
-    BinaryTree (const BinaryTree& bt){if(bt.root != nullptr) this->copy_util(*bt.root);}
+    BinaryTree (const BinaryTree& bt){this->copy_util(*bt.root, this->root);}
     /**
      * @brief Copy assignement
      * 
@@ -347,13 +345,13 @@ class BinaryTree<K,V,F>::ConstIterator : public BinaryTree<K,V,F>::Iterator
 };
 
 template <class K, class V, class F>
-void BinaryTree<K,V,F>::copy_util(const BinaryTree::Node& old)
+void BinaryTree<K,V,F>::copy_util(const BinaryTree::Node& old, std::unique_ptr<BinaryTree::Node>& copied )
 {
-    insert(old.entry.first, old.entry.second);
+    copied.reset(new Node(old.entry.first, old.entry.second, old._parent));
     if(old._left != nullptr)
-        copy_util(*old._left);
+        copy_util(*old._left, copied->_left);
     if(old._right != nullptr)
-        copy_util(*old._right);
+        copy_util(*old._right, copied->_right);
 }
 
 template <class K, class V, class F>
