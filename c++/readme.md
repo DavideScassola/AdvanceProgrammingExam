@@ -5,6 +5,5 @@
 - `unitTest`: unit test for verifying the program correctness.
 - `include`: this folder contains the Binary Tree source code.
 - `test`: this folder contains the unit test source code.
-- `documentation`: 
-- `html`:
+- `documentation`: this folder contains the documentation generated with Doxygen, specifically in the `html` subdirectory there is the file index.html with the full documentation.
 - `old`: this folder contains just and old not recursive version of the Binary Tree.
