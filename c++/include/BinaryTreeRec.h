@@ -65,8 +65,8 @@ class BinaryTree
     * @brief auxiliary recursive function that implements the search algorithm used in insert and find functions
     * 
     * 
-    * Given a pointer to a node (branch), a key, and a pointer to a parent, this function look for the 
-    * correct place where to find (or to put) an element with this key in the subtree determined by the given node (branch).
+    * Given a pointer to a node, a key, and a pointer to a parent, this function look for the 
+    * correct place where to find (or to put) an element with this key in the subtree determined by the given node.
     * This function will return also the correct parent to assign to the node in the case of insertion.
     * The correct parent is the first ancestor which key is greater than the actual node's key.
     *
@@ -92,8 +92,7 @@ class BinaryTree
     void balance(std::vector<std::pair<const K, V>>& list, int begin, int end);
     /**
      * @brief An utility for the copy constructor
-     * It starts a recursive copy of a BT starting from a given node(ideally the root). It simply insert the nodes in the caller object in the same
-     * order it finds them in the tree with root = old.  
+     * It starts a recursive copy of a BT starting from a given node(ideally the root).
      * @param old the node from which to start the copy. If is root then it copy an entire tree, else just a subtree
      */
     void copy_util(const BinaryTree::Node& old, std::unique_ptr<Node>& copied);
@@ -163,7 +162,7 @@ class BinaryTree
     * 
     * 
     * Calling this function the tree will be balanced. The underlying algorithm consists in extracting the list of
-    * al pairs (key,value) of the current tree, clearing the current tree, and then inserting all the pairs in such
+    * all pairs (key,value) of the current tree, clearing the current tree, and then inserting all the pairs in such
     * an order that the tree will balanced.
     *
     */
@@ -269,7 +268,7 @@ class BinaryTree
      * @brief An insert which takes directly an std::pair with the right types
      * 
      * @param p the std::pair to be added in the new node 
-     * @return std::pair<Iterator,bool> saame as the other insert()
+     * @return std::pair<Iterator,bool> same as the other insert()
      */
     std::pair<Iterator,bool> insert (std::pair<const K&, const V&> p) {return insert(p.first,p.second);}
     
@@ -310,7 +309,7 @@ class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_t
 template <class K, class V, class F>
 typename BinaryTree<K,V,F>::Iterator& BinaryTree<K,V,F>::Iterator::operator++()
 {
-    // when you can go left
+    // when you can go right
     if(pointed->_right != nullptr)
     {   
         pointed = pointed->_right.get();
@@ -381,7 +380,7 @@ typename BinaryTree<K, V, F>::s_pair BinaryTree<K,V,F>::search (std::unique_ptr<
     if(node == nullptr || (!cmp(node->entry.first,key) && !cmp(key,node->entry.first)) )
         return BinaryTree<K, V, F>::s_pair{node,old};       
     else 
-        //if twe are on a right node, our parent is our father parent
+        //if we are on a right node, our parent is our father parent
         return cmp(node->entry.first, key) ? search(node->_right,key, node->_parent) : search(node->_left,key, node.get());
 }
 
