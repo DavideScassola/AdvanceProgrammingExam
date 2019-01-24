@@ -50,7 +50,7 @@ int main(int arcv, char *argv[])
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	auto total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
-	std::cout << sum << " LINKED_LIST_TREE: " << total << "us, average = " << total/double(N1) << "us" << std::endl;
+	std::cout << " LINKED_LIST_TREE: " << total << "us, average = " << total/double(N1) << "us" << std::endl;
 	
 
 
@@ -126,15 +126,7 @@ int main(int arcv, char *argv[])
 	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
 	std::cout << "MAP: " << total << "us, average = " << total/double(N2) << "us" << std::endl;
 
-
-	/*
-	//perform the final sum, so we are sure that the elements were really accessed
-	double s{0};
-	for(double x: container)
-		s+=x;
-
-	std::cout << "sum is: " << s << std::endl;
-	*/
+	std::cout << "\"sum\" is: " << sum << std::endl;
 	
     return 0;
 }

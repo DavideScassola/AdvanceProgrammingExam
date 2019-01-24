@@ -16,7 +16,7 @@ format: $(SRC) include/BinaryTree.h
 	@clang-format -i $^ 2>/dev/null || echo "Please install clang-format to run this commands"
 
 document: 
-	@doxygen documentation/Doxyfile
+	@cd documentation; doxygen Doxyfile
 
 clean:
 	@rm -rf *~ */*~ bench unitTest documentation/html
