@@ -7,6 +7,13 @@
 #include <chrono>
 #include "BinaryTreeRec.h"
 
+template <class T>
+int dummy(T& i){
+	return int(i) << 1;
+}
+
+int sum;
+
 int main(int arcv, char *argv[])
 {
 
@@ -39,11 +46,11 @@ int main(int arcv, char *argv[])
 	auto begin = std::chrono::high_resolution_clock::now();
 	for(auto e : random_permutation_vector)
 	{
-		container.push_back(linked_list_tree[e]);
+		sum += dummy(linked_list_tree[e]);
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	auto total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
-	std::cout << "LINKED_LIST_TREE: " << total << "us, average = " << total/double(N1) << "us" << std::endl;
+	std::cout << sum << " LINKED_LIST_TREE: " << total << "us, average = " << total/double(N1) << "us" << std::endl;
 	
 
 
@@ -58,9 +65,9 @@ int main(int arcv, char *argv[])
 		random.push_back(i);
 	std::random_shuffle ( random.begin(), random.end() );
 
-	BinaryTree<const int, double> balanced_tree;
-	BinaryTree<const int, double> random_tree;
-	std::map<const int, double> map;
+	BinaryTree<int, double> balanced_tree;
+	BinaryTree<int, double> random_tree;
+	std::map<int, double> map;
 
 	// initializing std map
 	std::cout << "initializing std::map  . . ." << std::endl;
@@ -93,7 +100,7 @@ int main(int arcv, char *argv[])
 	begin = std::chrono::high_resolution_clock::now();
 	for(auto e : random)
 	{
-		container.push_back(random_tree[e]);
+		sum += dummy(random_tree[e]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
@@ -103,7 +110,7 @@ int main(int arcv, char *argv[])
 	begin = std::chrono::high_resolution_clock::now();
 	for(auto e : random)
 	{
-		container.push_back(balanced_tree[e]);
+		sum += dummy(balanced_tree[e]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
@@ -113,20 +120,21 @@ int main(int arcv, char *argv[])
 	begin = std::chrono::high_resolution_clock::now();
 	for(auto e : random)
 	{
-		container.push_back(map[e]);
+		sum += dummy(map[e]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 	total = std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
 	std::cout << "MAP: " << total << "us, average = " << total/double(N2) << "us" << std::endl;
 
 
-
+	/*
 	//perform the final sum, so we are sure that the elements were really accessed
 	double s{0};
 	for(double x: container)
 		s+=x;
 
 	std::cout << "sum is: " << s << std::endl;
+	*/
 	
     return 0;
 }
