@@ -72,13 +72,13 @@ int main(int arcv, char *argv[])
 	// initializing std map
 	std::cout << "initializing std::map  . . ." << std::endl;
 	for(int i = 0; i<N2; i++)
-		map.insert(std::make_pair(i,i));
+		map.insert(std::make_pair(i,i + 0.1));
 
 	// initializing random tree
 	std::cout << "initializing random tree . . ." << std::endl;
 	for(auto e : random)
 	{
-		random_tree.insert(e,e);
+		random_tree.insert(e,e + 0.1);
 	}
 
 	// balancing one of the trees
