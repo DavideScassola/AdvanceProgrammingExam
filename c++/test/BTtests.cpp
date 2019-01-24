@@ -171,7 +171,7 @@ TEST_CASE("Testing methos of class BT", "[BinaryTree]")
 	{
 		
 		//initialize the tree
-		BinaryTree<int,std::string,std::greater<int>> bt_fun{};
+		BinaryTree<int,std::string,std::greater<int>> bt_fun{std::greater<int>{}};
 		for (int i = 0; i < 10; ++i)
 		{
 			bt_fun.insert(keys[i], values[keys[i]]);

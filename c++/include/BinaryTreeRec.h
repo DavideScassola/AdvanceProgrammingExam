@@ -16,18 +16,23 @@
 #include <string>
 #include <vector>
 
+namespace {
+template <class K>
+bool default_comparator(const K& k1, const K& k2) {return k1 < k2;}
+}
+
 /**
  * @brief Class that implements a binary tree 
  * 
  * The implementation is a simple not autobalancing Binary tree, it is constructed with
- * a constant templated key, a templated value and a templated comparing function (the default
+ * a constant templated key, a templated value and a templated comparing default_comparatorion (the default
  *  is the < operator of the key type). It has a unique pointer to the root node.
  * 
  * @tparam K the key type
  * @tparam V the value stored in the node
  * @tparam std::less<K> the comparing function(defaul <)
  */
-template <class K, class V, class F = std::less<K>>
+template <class K, class V, class F = decltype(&::default_comparator<K>)>
 class BinaryTree
 {
     /**
@@ -57,9 +62,9 @@ class BinaryTree
      * @brief A function to calculate the first node (following the key order)
      * @return Node* a pointer to the first node
      */
-    Node* first_node() const;
+    Node* first_node() const noexcept;
     /** The comparison operator, a functional object that returns a boolean */
-    F cmp = F{};
+    F cmp;
 
     /**
     * @brief auxiliary recursive function that implements the search algorithm used in insert and find functions
@@ -75,7 +80,7 @@ class BinaryTree
     * @tparam Node* pointer to the right parent for the insertion
     * @return std::pair< std::unique_ptr<Node>&, Node* > pair with the reference to the target branch and the pointer to the correct parent
     */
-    std::pair< std::unique_ptr<Node>&, Node* > search (std::unique_ptr<Node>& node,const K& key, Node* old );
+    std::pair< std::unique_ptr<Node>&, Node* > search(std::unique_ptr<Node>& node,const K& key, Node* old ) const;
 
     /**
     * @brief auxiliary recursive function that implements the balancing algorithm used in the balance() function
@@ -103,7 +108,7 @@ class BinaryTree
     /**
      * @brief Construct a new Binary Tree object
      */
-    BinaryTree() = default;
+    BinaryTree(F f = ::default_comparator): cmp{f} {};
     /**
      * @brief Destroy the Binary Tree object
      * 
@@ -114,7 +119,7 @@ class BinaryTree
      * 
      * @param bt the tree to be copied
      */
-    BinaryTree (const BinaryTree& bt){this->copy_util(*bt.root, this->root);}
+    BinaryTree (const BinaryTree& bt) : cmp{bt.cmp} {this->copy_util(*bt.root, this->root);}
     /**
      * @brief Copy assignement
      * 
@@ -137,25 +142,25 @@ class BinaryTree
      * @return true if the tree is balanced
      * @return false if the tree is not balanced
      */
-    bool isBalanced(Node* node);
+    bool isBalanced(Node* node) const noexcept;
     /**
      * @brief Returns the height of a tree or subtree starting by a specific node
      * 
      * @param node the node from where to stard
      * @return int the height 
      */
-    int height(Node* node);
+    int height(Node* node) const noexcept;
     /**
      * @brief A getter method for the root node
      * 
      * @return Node* a pointer to the root node
      */
-    Node* root_get() {return root.get();};
+    Node* root_get() const noexcept {return root.get();}
 #endif
 
 
     //clear the content of the tree
-    void clear() {root.reset();}
+    void clear() noexcept {root.reset();} 
 
     /**
     * @brief function that balance the tree
@@ -284,7 +289,7 @@ class BinaryTree
 };
 
 template <class K, class V, class F>
-class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_tag,V>
+class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_tag,std::pair<const K, V>>
 {
     using Node = BinaryTree<K,V,F>::Node;
     Node* pointed;
@@ -301,8 +306,8 @@ class BinaryTree<K,V,F>::Iterator : public std::iterator<std::forward_iterator_t
         ++(*this);
         return it;
     }
-    bool operator==(const Iterator& other) {return pointed == other.pointed;}
-    bool operator!=(const Iterator& other)  {return !(*this == other);}
+    bool operator==(const Iterator& other) const noexcept {return pointed == other.pointed;}
+    bool operator!=(const Iterator& other)  const noexcept {return !(*this == other);}
 
 };
 
@@ -325,7 +330,7 @@ typename BinaryTree<K,V,F>::Iterator& BinaryTree<K,V,F>::Iterator::operator++()
 }
 
 template <class K, class V, class F>
-typename BinaryTree<K,V,F>::Node* BinaryTree<K,V,F>::first_node() const
+typename BinaryTree<K,V,F>::Node* BinaryTree<K,V,F>::first_node() const noexcept
 {
     Node* node = root.get();
     //find the leftmost node
@@ -374,7 +379,7 @@ std::pair<typename BinaryTree<K,V,F>::Iterator,bool> BinaryTree<K,V,F>::insert(c
 }
 
 template <class K, class V,class F>
-typename BinaryTree<K, V, F>::s_pair BinaryTree<K,V,F>::search (std::unique_ptr<typename BinaryTree<K,V,F>::Node>& node, const K& key, typename BinaryTree<K,V,F>::Node* old)
+typename BinaryTree<K, V, F>::s_pair BinaryTree<K,V,F>::search (std::unique_ptr<typename BinaryTree<K,V,F>::Node>& node, const K& key, typename BinaryTree<K,V,F>::Node* old) const
 {
     //stop when the key is present or we have reached the right insertion node
     if(node == nullptr || (!cmp(node->entry.first,key) && !cmp(key,node->entry.first)) )
