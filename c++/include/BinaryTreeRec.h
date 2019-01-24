@@ -102,8 +102,9 @@ class BinaryTree
      */
     void copy_util(const BinaryTree::Node& old, std::unique_ptr<Node>& copied);
  
-    public:
+    
     using s_pair = std::pair<std::unique_ptr<typename BinaryTree<K,V,F>::Node>&,typename BinaryTree<K,V,F>::Node*>;
+    public:
 
     /**
      * @brief Construct a new Binary Tree object
